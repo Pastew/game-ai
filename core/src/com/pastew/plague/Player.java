@@ -10,10 +10,12 @@ public class Player {
     private float xSpeed;
     private float ySpeed;
     private float size;
+    private Vector2 target;
 
     public Player(float x, float y, float size) {
         this.position = new Vector2(x,y);
         this.size = size;
+        target = new Vector2(x,y);
     }
 
     public void update(){
@@ -34,5 +36,15 @@ public class Player {
         shapeRenderer.circle(position.x, position.y, size);
         shapeRenderer.setColor(Color.FOREST);
         shapeRenderer.end();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.line(position.x, position.y, target.x, target.y);
+        shapeRenderer.setColor(Color.ROYAL);
+        shapeRenderer.end();
+    }
+
+    public void setTarget(int mouseX, int mouseY) {
+        this.target.x = mouseX;
+        this.target.y = mouseY;
     }
 }

@@ -45,6 +45,11 @@ public class Plague extends ApplicationAdapter {
             player.setYSpeed(-1);
         else
             player.setYSpeed(0);
+
+        int mouseX = Gdx.input.getX();
+        int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+        player.setTarget(mouseX, mouseY);
     }
 
     @Override
