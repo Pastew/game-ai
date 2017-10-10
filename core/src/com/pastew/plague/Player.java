@@ -4,39 +4,18 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
-public class Player {
-    private Vector2 position;
-    private float speedMultiplier = 3;
-    private float xSpeed;
-    private float ySpeed;
-    private float size;
+public class Player extends MoveableDrawableCircle {
     private Vector2 target;
 
-    public Player(float x, float y, float size) {
-        this.position = new Vector2(x,y);
-        this.size = size;
+    public Player(float x, float y, float size, float speedMultiplier) {
+        super(new Vector2(x,y), size, speedMultiplier);
         target = new Vector2(x,y);
     }
 
-    public void update(){
-        this.position.x += xSpeed;
-        this.position.y += ySpeed;
-    }
-
-    public void setXSpeed(int xSpeed) {
-        this.xSpeed = xSpeed * speedMultiplier;
-    }
-
-    public void setYSpeed(int ySpeed) {
-        this.ySpeed = ySpeed * speedMultiplier;
-    }
-
     public void draw(ShapeRenderer shapeRenderer) {
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.circle(position.x, position.y, size);
-        shapeRenderer.setColor(Color.FOREST);
-        shapeRenderer.end();
+        super.draw(shapeRenderer);
 
+        // Draw beam
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         Vector2 endOfLine = target.sub(position);
         endOfLine.nor();

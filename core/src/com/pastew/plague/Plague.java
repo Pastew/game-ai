@@ -16,7 +16,7 @@ public class Plague extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
-        player = new Player(400, 400, 16);
+        player = new Player(400, 400, 16, 3);
 	}
 
 	@Override
