@@ -38,7 +38,12 @@ public class Player {
         shapeRenderer.end();
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.line(position.x, position.y, target.x, target.y);
+        Vector2 endOfLine = target.sub(position);
+        endOfLine.nor();
+        endOfLine.x *= 5000;
+        endOfLine.y *= 5000;
+        endOfLine.add(position);
+        shapeRenderer.line(position.x, position.y, endOfLine.x, endOfLine.y);
         shapeRenderer.setColor(Color.ROYAL);
         shapeRenderer.end();
     }
