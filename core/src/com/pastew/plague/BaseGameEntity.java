@@ -1,32 +1,28 @@
 package com.pastew.plague;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
 public class BaseGameEntity {
-    //every entity has a unique identifying number
-    public int ID;
-    //this is the next valid ID. Each time a BaseGameEntity is instantiated
-    //this value is updated
-    static int nextValidID;
 
-    //this is called within the constructor to make sure the ID is set
-    //correctly. It verifies that the value passed to the method is greater
-    //or equal to the next valid ID, before setting the ID and incrementing
-    //the next valid ID
-    public void setID(int val) {
-        this.ID = val;
-    }
+    protected Vector2D position;
+    protected Color color;
+    protected ShapeRenderer shapeRenderer;
 
-    public BaseGameEntity(int id) {
-        setID(id);
-    }
 
     public BaseGameEntity() {
+        position = new Vector2D(0, 0);
+        shapeRenderer = new ShapeRenderer();
+        color = Color.WHITE;
     }
 
-    //all entities must implement an update function
-    public void Update() {
+    public void update(double deltaTime) {
     }
 
-    int ID() {
-        return ID;
+    public void render() {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(color);
+        shapeRenderer.circle((float) position.x, (float) position.y, 10);
+        shapeRenderer.end();
     }
 }
