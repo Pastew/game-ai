@@ -4,9 +4,9 @@ public class Agent extends MovingEntity {
 
     private GameWorld gameWorld;
 
-    SteeringBehaviors steeringBehaviors;
+    private SteeringBehaviors steeringBehaviors;
 
-    public Agent(GameWorld gameWorld) {
+    Agent(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
         steeringBehaviors = new SteeringBehaviors(this);
         steeringBehaviors.turnOnSeek(gameWorld.getPlayerVector2D());

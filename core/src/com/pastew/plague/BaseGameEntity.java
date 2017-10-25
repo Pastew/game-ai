@@ -5,12 +5,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class BaseGameEntity {
 
-    protected Vector2D position;
-    protected Color color;
-    protected ShapeRenderer shapeRenderer;
+    Vector2D position;
+    Color color;
+    ShapeRenderer shapeRenderer;
 
 
-    public BaseGameEntity() {
+    BaseGameEntity() {
         position = new Vector2D(0, 0);
         shapeRenderer = new ShapeRenderer();
         color = Color.WHITE;

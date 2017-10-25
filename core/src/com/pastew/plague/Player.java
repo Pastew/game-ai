@@ -10,7 +10,7 @@ public class Player extends MovingEntity {
     private float moveForce;
     private float frictionCoeffictient;
 
-    public Player(float x, float y) {
+    Player(float x, float y) {
         super();
         position = new Vector2D(x,y);
         crosshair = new Vector2D(x,y);
@@ -35,16 +35,16 @@ public class Player extends MovingEntity {
         shapeRenderer.end();
     }
 
-    public void setCrosshairPosition(int mouseX, int mouseY) {
+    void setCrosshairPosition(int mouseX, int mouseY) {
         this.crosshair.x = mouseX;
         this.crosshair.y = mouseY;
     }
 
-    public void setXForceDirection(int i) {
+    void setXForceDirection(int i) {
         forceDirection.x = i;
     }
 
-    public void setYForceDirection(int i) {
+    void setYForceDirection(int i) {
         forceDirection.y = i;
     }
 

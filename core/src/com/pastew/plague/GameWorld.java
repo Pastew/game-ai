@@ -9,15 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class GameWorld {
+class GameWorld {
 
-    final int ENEMIES_NUMBER = 10;
+    private final static int ENEMIES_NUMBER = 10;
 
     private SpriteBatch batch;
     private Player player;
     private List<BaseGameEntity> entities;
 
-    public GameWorld() {
+    GameWorld() {
         entities = new ArrayList<BaseGameEntity>();
         player = new Player(400, 400);
         entities.add(player);
@@ -47,7 +47,7 @@ public class GameWorld {
     }
 
 
-    public void update() {
+    void update() {
         handleKeyboardInput();
 
         // Update each entity
@@ -55,7 +55,7 @@ public class GameWorld {
             entity.update(Gdx.graphics.getDeltaTime());
     }
 
-    public void render() {
+    void render() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
@@ -86,11 +86,11 @@ public class GameWorld {
         player.setCrosshairPosition(mouseX, mouseY);
     }
 
-    public void dispose() {
+    void dispose() {
         batch.dispose();
     }
 
-    public Vector2D getPlayerVector2D() {
+    Vector2D getPlayerVector2D() {
         return player.position;
     }
 }
