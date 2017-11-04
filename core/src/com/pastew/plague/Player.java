@@ -1,5 +1,6 @@
 package com.pastew.plague;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
@@ -9,10 +10,11 @@ public class Player extends MovingEntity {
     private Vector2D forceDirection;
     private float moveForce;
     private float frictionCoeffictient;
-
+    private Vector2D previousPosition;
     Player(float x, float y) {
         super();
         position = new Vector2D(x,y);
+        previousPosition= new Vector2D(0,0);
         crosshair = new Vector2D(x,y);
         maxSpeed = 5;
         moveForce = 100;
@@ -47,7 +49,14 @@ public class Player extends MovingEntity {
     void setYForceDirection(int i) {
         forceDirection.y = i;
     }
+    
+    public void setPreviousPositionAndZeroVelocity(){
+        this.position.x=previousPosition.x;
+        this.position.y=previousPosition.y;
 
+        velocity.x=0;
+        velocity.y=0;
+    }
     public void update(double timeElapsed){
         Vector2D force = forceDirection.mul(moveForce);
         //Acceleration = Force/Mass
@@ -55,7 +64,23 @@ public class Player extends MovingEntity {
         velocity.add(acceleration.mul(timeElapsed));
 
         velocity.Truncate(maxSpeed);
-        position.add(velocity);
+      //  position.add(velocity);
+        
+        //remembering previous position of player
+        previousPosition.x=this.position.x;
+        previousPosition.y=this.position.y;
+
+         //player cannot move off the map 
+        double newXPosition = position.x + velocity.x;
+        
+        if ( newXPosition < (Gdx.graphics.getWidth() - size/2) && newXPosition > 0f +  size/2){
+            this.position.x = newXPosition;
+        }
+        
+          double newYPosition = position.y + velocity.y;
+        if ( newYPosition < (Gdx.graphics.getHeight() - size/2) && newYPosition > 0f + size/2){
+            this.position.y = newYPosition;
+        }
 
         // Pseudo friction to make player slow down and stop when no force is applied
         velocity.mul(frictionCoeffictient);

@@ -8,26 +8,63 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 class GameWorld {
 
     private final static int ENEMIES_NUMBER = 10;
-
+    private final static int COLUMN_NUMBER = 8;
     private SpriteBatch batch;
     private Player player;
     private List<BaseGameEntity> entities;
+    private List<Column> columns;
 
     GameWorld() {
         entities = new ArrayList<BaseGameEntity>();
         player = new Player(400, 400);
         entities.add(player);
         generateEnemies();
-
+        
+        columns =  new ArrayList<Column>();
+        generateColumns();
+        
         batch = new SpriteBatch();
     }
 
+    
+    private void generateColumns(){
+    
+         Random random = new Random();
+
+         float startX = 100;
+         float startY = 100;
+         float endX = Gdx.graphics.getWidth()-100;
+         float endY = Gdx.graphics.getHeight()-100;
+             
+         while( columns.size() < COLUMN_NUMBER){
+    
+            float x =     (float) ((int)(Math.random() * ( endX - startX ))+startX);
+            float y =     (float) ((int)(Math.random() * ( endY - startY ))+startY);
+            
+            Column column = new Column(x,y);
+            boolean found = false;
+            for (Column  otherColumn : columns ){
+                if ( column.position.Distance(otherColumn.position) <= column.size){
+                  found = true;
+                break;
+                }
+                
+            }
+            if ( !found && player.position.Distance(column.position) >= (player.size/2 + column.size/2) ){
+           columns.add(column);
+            }
+         
+        }
+    
+    }
     private void generateEnemies() {
         Random random = new Random();
+        
 
         for (int i = 0; i < ENEMIES_NUMBER; ++i) {
             float x = 10;
@@ -53,14 +90,33 @@ class GameWorld {
         // Update each entity
         for (BaseGameEntity entity : entities)
             entity.update(Gdx.graphics.getDeltaTime());
+        
+        checkPlayerCollisions();
     }
-
+    
+    //checking player collisions with columns
+    void checkPlayerCollisions(){
+        boolean playerColliding = false;
+        for (Column  column : columns ){
+            if ( column.position.Distance(player.position) <= (column.size/2f + player.size/2f)){
+                playerColliding = true;
+                break;
+            }
+        }
+        if ( playerColliding){
+            player.setPreviousPositionAndZeroVelocity();
+        }
+    }
     void render() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         for (BaseGameEntity entity : entities)
             entity.render();
+        //columns
+        for (Column column: columns)
+            column.render();
+               
         batch.end();
     }
 

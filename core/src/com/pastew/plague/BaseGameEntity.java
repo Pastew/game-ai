@@ -8,6 +8,7 @@ public class BaseGameEntity {
     Vector2D position;
     Color color;
     ShapeRenderer shapeRenderer;
+    protected  float size = 20; 
 
 
     BaseGameEntity() {
@@ -22,7 +23,7 @@ public class BaseGameEntity {
     public void render() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(color);
-        shapeRenderer.circle((float) position.x, (float) position.y, 10);
+        shapeRenderer.circle((float) position.x, (float) position.y, size/2);
         shapeRenderer.end();
     }
 }
