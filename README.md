@@ -1,3 +1,5 @@
+Implementation of algorithms from chapter 3 of book "Programming Game AI by Example, Mat Buckland"
+
 # Project requirements
 * Obstacle Avoidance
 * Seek, Arrive, wander
