@@ -1,6 +1,6 @@
 
 package com.pastew.plague;
-
+//
 import com.badlogic.gdx.graphics.Color;
 
 public class Column extends BaseGameEntity{
