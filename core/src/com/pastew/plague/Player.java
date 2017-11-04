@@ -20,7 +20,7 @@ public class Player extends MovingEntity {
         maxSpeed = 5;
         moveForce = 100;
         forceDirection = new Vector2D(0, 0);
-        color = Color.GOLD;
+        color = GameColors.playerColor;
     }
 
     public void render() {
@@ -28,7 +28,7 @@ public class Player extends MovingEntity {
 
         // Draw rifle beam
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.FIREBRICK);
+        shapeRenderer.setColor(GameColors.rifleBeamColor);
         Vector2D endOfLine = crosshair.sub(position);
         endOfLine.Normalize();
         endOfLine.mul(5000);

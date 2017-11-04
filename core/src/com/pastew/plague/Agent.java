@@ -13,6 +13,7 @@ public class Agent extends MovingEntity {
         //steeringBehaviors.turnOnSeek(gameWorld.getColumn(0).position);
 
         maxSpeed = 5;
+        color = GameColors.enemyColor;
     }
 
     public void update(double deltaTime) {

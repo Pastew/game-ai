@@ -56,14 +56,11 @@ class GameWorld {
             if (!found && player.position.Distance(column.position) >= (player.size / 2 + column.size / 2)) {
                 columns.add(column);
             }
-
         }
-
     }
 
     private void generateEnemies() {
         Random random = new Random();
-
 
         for (int i = 0; i < ENEMIES_NUMBER; ++i) {
             float x = 10;
@@ -108,7 +105,11 @@ class GameWorld {
     }
 
     void render() {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(GameColors.bgColor.r,
+                GameColors.bgColor.g,
+                GameColors.bgColor.b,
+                GameColors.bgColor.a);
+
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         for (BaseGameEntity entity : entities)
