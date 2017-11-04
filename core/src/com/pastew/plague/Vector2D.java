@@ -1,6 +1,7 @@
 /**
- *   2D vector struct
- *   @author Petr Bilek (http://www.sallyx.org/)
+ * 2D vector struct
+ *
+ * @author Petr Bilek (http://www.sallyx.org/)
  */
 package com.pastew.plague;
 
@@ -74,18 +75,19 @@ public class Vector2D {
     /**
      * calculates the dot product
      * @param v2
-     * @return  dot product
+     * @return dot product
      */
     public double Dot(Vector2D v2) {
         return x * v2.x + y * v2.y;
     }
+
     public static final int clockwise = 1;
     public static final int anticlockwise = -1;
 
     /**
-    /* returns positive if v2 is clockwise of this vector,
-    /* negative if anticlockwise (assuming the Y axis is pointing down,
-    /* X axis to right like a Window app)
+     /* returns positive if v2 is clockwise of this vector,
+     /* negative if anticlockwise (assuming the Y axis is pointing down,
+     /* X axis to right like a Window app)
      */
     public int Sign(Vector2D v2) {
         if (y * v2.x > x * v2.y) {
@@ -105,7 +107,7 @@ public class Vector2D {
     /**
      * adjusts x and y so that the length of the vector does not exceed max
      * truncates a vector so that its length does not exceed max
-     * @param max 
+     * @param max
      */
     public void Truncate(double max) {
         if (this.Length() > max) {
@@ -116,7 +118,7 @@ public class Vector2D {
 
     /**
      * calculates the euclidean distance between two vectors
-     * 
+     *
      * @param v2
      * @return the distance between this vector and th one passed as a parameter
      */
@@ -127,11 +129,11 @@ public class Vector2D {
         return Math.sqrt(ySeparation * ySeparation + xSeparation * xSeparation);
     }
 
-    /** 
+    /**
      * squared version of distance.
      * calculates the euclidean distance squared between two vectors 
      * @param v2
-     * @return 
+     * @return
      */
     public double DistanceSq(Vector2D v2) {
         double ySeparation = v2.y - y;
@@ -143,7 +145,7 @@ public class Vector2D {
     /**
      *  given a normalized vector this method reflects the vector it
      *  is operating upon. (like the path of a ball bouncing off a wall)
-     * @param norm 
+     * @param norm
      */
     public void Reflect(Vector2D norm) {
         this.add(norm.GetReverse().mul(2.0 * Dot(norm)));
@@ -194,7 +196,7 @@ public class Vector2D {
         return (x != rhs.x) || (y != rhs.y);
     }
 
-//------------------------------------------------------------------------some more operator overloads
+    //------------------------------------------------------------------------some more operator overloads
     static public Vector2D mul(Vector2D lhs, double rhs) {
         Vector2D result = new Vector2D(lhs);
         result.mul(rhs);
@@ -207,7 +209,7 @@ public class Vector2D {
         return result;
     }
 
-//overload the - operator
+    //overload the - operator
     static public Vector2D sub(Vector2D lhs, Vector2D rhs) {
         Vector2D result = new Vector2D(lhs);
         result.x -= rhs.x;
@@ -216,7 +218,7 @@ public class Vector2D {
         return result;
     }
 
-//overload the + operator
+    //overload the + operator
     static public Vector2D add(Vector2D lhs, Vector2D rhs) {
         Vector2D result = new Vector2D(lhs);
         result.x += rhs.x;
@@ -225,7 +227,7 @@ public class Vector2D {
         return result;
     }
 
-//overload the / operator
+    //overload the / operator
     static public Vector2D div(Vector2D lhs, double val) {
         Vector2D result = new Vector2D(lhs);
         result.x /= val;
@@ -234,13 +236,13 @@ public class Vector2D {
         return result;
     }
 
-//std::ostream& operator<<(std::ostream& os, const Vector2D& rhs)
+    //std::ostream& operator<<(std::ostream& os, const Vector2D& rhs)
     @Override
     public String toString() {
         return " " + this.x + " " + this.y;
     }
 
-//std::ifstream& operator>>(std::ifstream& is, Vector2D& lhs)
+    //std::ifstream& operator>>(std::ifstream& is, Vector2D& lhs)
     public Vector2D read(InputStream in) {
         Scanner sc = new Scanner(in);
 
@@ -249,7 +251,7 @@ public class Vector2D {
         return this;
     }
 
-//------------------------------------------------------------------------non member functions
+    //------------------------------------------------------------------------non member functions
     public static Vector2D Vec2DNormalize(Vector2D v) {
         Vector2D vec = new Vector2D(v);
 
@@ -288,8 +290,7 @@ public class Vector2D {
     }
 
 
-
-///////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////
 //treats a window as a toroid
     public static void WrapAround(Vector2D pos, int MaxX, int MaxY) {
         if (pos.x > MaxX) {
@@ -315,18 +316,18 @@ public class Vector2D {
      * @param p
      * @param top_left
      * @param bot_rgt
-     * @return 
+     * @return
      */
     public static boolean NotInsideRegion(Vector2D p,
-            Vector2D top_left,
-            Vector2D bot_rgt) {
+                                          Vector2D top_left,
+                                          Vector2D bot_rgt) {
         return (p.x < top_left.x) || (p.x > bot_rgt.x)
                 || (p.y < top_left.y) || (p.y > bot_rgt.y);
     }
 
     public static boolean InsideRegion(Vector2D p,
-            Vector2D top_left,
-            Vector2D bot_rgt) {
+                                       Vector2D top_left,
+                                       Vector2D bot_rgt) {
         return !((p.x < top_left.x) || (p.x > bot_rgt.x)
                 || (p.y < top_left.y) || (p.y > bot_rgt.y));
     }
@@ -335,14 +336,14 @@ public class Vector2D {
         return !((p.x < left) || (p.x > right) || (p.y < top) || (p.y > bottom));
     }
 
-/**
- * @return true if the target position is in the field of view of the entity
- *         positioned at posFirst facing in facingFirst
- */
+    /**
+     * @return true if the target position is in the field of view of the entity
+     *         positioned at posFirst facing in facingFirst
+     */
     public static boolean isSecondInFOVOfFirst(Vector2D posFirst,
-            Vector2D facingFirst,
-            Vector2D posSecond,
-            double fov) {
+                                               Vector2D facingFirst,
+                                               Vector2D posSecond,
+                                               double fov) {
         Vector2D toTarget = Vec2DNormalize(sub(posSecond, posFirst));
         return facingFirst.Dot(toTarget) >= Math.cos(fov / 2.0);
     }

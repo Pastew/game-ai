@@ -1,5 +1,5 @@
 package com.pastew.plague;
-//
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
@@ -8,7 +8,7 @@ public class BaseGameEntity {
     Vector2D position;
     Color color;
     ShapeRenderer shapeRenderer;
-    protected  float size = 20; 
+    protected float size = 20;
 
 
     BaseGameEntity() {
@@ -23,7 +23,7 @@ public class BaseGameEntity {
     public void render() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(color);
-        shapeRenderer.circle((float) position.x, (float) position.y, size/2);
+        shapeRenderer.circle((float) position.x, (float) position.y, size / 2);
         shapeRenderer.end();
     }
 }
