@@ -9,8 +9,11 @@ public class Agent extends MovingEntity {
     Agent(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
         steeringBehaviors = new SteeringBehaviors(this);
-        steeringBehaviors.turnOnFlee(gameWorld.getPlayerVector2D());
+        //steeringBehaviors.turnOnFlee(gameWorld.getPlayerVector2D());
+        //steeringBehaviors.turnOnSeek(gameWorld.getPlayerVector2D());
         //steeringBehaviors.turnOnSeek(gameWorld.getColumn(0).position);
+        steeringBehaviors.turnOnArrive(gameWorld.getPlayerVector2D());
+
 
         maxSpeed = 5;
         color = GameColors.enemyColor;
