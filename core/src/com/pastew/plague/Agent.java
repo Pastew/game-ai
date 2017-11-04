@@ -9,13 +9,13 @@ public class Agent extends MovingEntity {
     Agent(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
         steeringBehaviors = new SteeringBehaviors(this);
-        steeringBehaviors.turnOnSeek(gameWorld.getPlayerVector2D());
+        steeringBehaviors.turnOnFlee(gameWorld.getPlayerVector2D());
+        //steeringBehaviors.turnOnSeek(gameWorld.getColumn(0).position);
 
         maxSpeed = 5;
     }
 
     public void update(double deltaTime) {
-        super.update(deltaTime);
         //calculate the combined force from each steering behavior in the
         //agent’s list
         Vector2D steeringForce = steeringBehaviors.calculate();
@@ -27,11 +27,6 @@ public class Agent extends MovingEntity {
         velocity.Truncate(maxSpeed);
         position.add(velocity);
 
-        //update the heading if the agent has a velocity greater than a very small value
-        if (velocity.LengthSq() > 0.00000001) {
-            Vector2D v = new Vector2D(velocity);
-            heading = Vector2D.Vec2DNormalize(v);
-            side = heading.perp();
-        }
+        super.update(deltaTime);
     }
 }

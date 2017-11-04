@@ -10,7 +10,6 @@ public class Player extends MovingEntity {
     private Vector2D crosshair; // celownik
     private Vector2D forceDirection;
     private float moveForce;
-    private float frictionCoeffictient;
     private Vector2D previousPosition;
 
     Player(float x, float y) {
@@ -20,7 +19,6 @@ public class Player extends MovingEntity {
         crosshair = new Vector2D(x, y);
         maxSpeed = 5;
         moveForce = 100;
-        frictionCoeffictient = 0.95f;
         forceDirection = new Vector2D(0, 0);
         color = Color.GOLD;
     }
@@ -60,11 +58,11 @@ public class Player extends MovingEntity {
         velocity.y = 0;
     }
 
-    public void update(double timeElapsed) {
+    public void update(double deltaTime) {
         Vector2D force = forceDirection.mul(moveForce);
         //Acceleration = Force/Mass
         Vector2D acceleration = force.div(mass);
-        velocity.add(acceleration.mul(timeElapsed));
+        velocity.add(acceleration.mul(deltaTime));
 
         velocity.Truncate(maxSpeed);
         //  position.add(velocity);
@@ -85,15 +83,6 @@ public class Player extends MovingEntity {
             this.position.y = newYPosition;
         }
 
-        // Pseudo friction to make player slow down and stop when no force is applied
-        velocity.mul(frictionCoeffictient);
-
-        //update the heading if the agent has a velocity greater than a very small value
-        if (velocity.LengthSq() > 0.00000001) {
-            Vector2D v = new Vector2D(velocity);
-            heading = Vector2D.Vec2DNormalize(v);
-            side = heading.perp();
-        }
-
+        super.update(deltaTime);
     }
 }

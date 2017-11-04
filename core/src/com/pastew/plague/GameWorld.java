@@ -22,16 +22,15 @@ class GameWorld {
         entities = new ArrayList<BaseGameEntity>();
         player = new Player(400, 400);
         entities.add(player);
-        generateEnemies();
-
-        columns = new ArrayList<Column>();
         generateColumns();
+        generateEnemies();
 
         batch = new SpriteBatch();
     }
 
 
     private void generateColumns() {
+        columns = new ArrayList<Column>();
 
         Random random = new Random();
 
@@ -70,10 +69,10 @@ class GameWorld {
             float x = 10;
             float y = 10;
             if (random.nextBoolean())
-                x = Gdx.graphics.getWidth() - i * 50;
+                x = Gdx.graphics.getWidth() - i * 200;
 
             if (random.nextBoolean())
-                y = Gdx.graphics.getHeight() - i * 50;
+                y = Gdx.graphics.getHeight() - i * 200;
 
             Agent enemy = new Agent(this);
             enemy.position.x = x;
@@ -149,5 +148,9 @@ class GameWorld {
 
     Vector2D getPlayerVector2D() {
         return player.position;
+    }
+
+    public Column getColumn(int index) {
+        return columns.get(index);
     }
 }

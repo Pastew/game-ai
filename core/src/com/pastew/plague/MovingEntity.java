@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class MovingEntity extends BaseGameEntity {
 
+    protected float frictionCoeffictient;
     Vector2D velocity;
     //a normalized vector pointing in the direction the entity is heading.
     Vector2D heading;
@@ -22,6 +23,7 @@ public class MovingEntity extends BaseGameEntity {
         side = heading.perp();
         mass = 1;
         maxSpeed = 100;
+        frictionCoeffictient = 0.95f;
     }
 
     public void render() {
@@ -39,5 +41,17 @@ public class MovingEntity extends BaseGameEntity {
         shapeRenderer.setColor(color);
         shapeRenderer.line((float) start.x, (float) start.y, (float) end.x, (float) end.y);
         shapeRenderer.end();
+    }
+
+    public void update(double deltaTime){
+        // Pseudo friction to make player slow down and stop when no force is applied
+        velocity.mul(frictionCoeffictient);
+
+        //update the heading if the agent has a velocity greater than a very small value
+        if (velocity.LengthSq() > 0.00000001) {
+            Vector2D v = new Vector2D(velocity);
+            heading = Vector2D.Vec2DNormalize(v);
+            side = heading.perp();
+        }
     }
 }
