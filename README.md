@@ -4,6 +4,7 @@ Implementation of algorithms from chapter 3 of book "Programming Game AI by Exam
 * Obstacle Avoidance - Iza
 * Seek, Arrive, wander - Kamil
 * Wall avoidance - Iza
+* Bots should not intersect with other bots - Iza
 * Hide, flocking - Kamil
 * Shooting should kill enemies - Kamil
 * Combining Behaviours

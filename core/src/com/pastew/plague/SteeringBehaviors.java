@@ -1,6 +1,10 @@
 package com.pastew.plague;
 
+import static com.pastew.plague.Transformation.PointToWorldSpace;
 import static com.pastew.plague.Vector2D.Vec2DDistanceSq;
+import static com.pastew.plague.utils.RandFloat;
+import static com.pastew.plague.utils.RandomClamped;
+import static com.pastew.plague.utils.TwoPi;
 import static java.lang.Math.min;
 
 public class SteeringBehaviors {
@@ -10,6 +14,15 @@ public class SteeringBehaviors {
     private Vector2D seekTarget;
     private Vector2D fleeTarget;
     private Vector2D arriveTarget;
+
+    // Wander
+    private boolean wandering = false;
+    double wanderRadius = 1.2; // radius of the constraining circle
+    double wanderDistance = 1.0; // distance the wander circle is projected in front of the agent
+    double wanderJitter = 80.0; // maximum amount of random displacement that can be added to the target each second.
+    double theta = RandFloat() * TwoPi;
+    private Vector2D wanderTarget = new Vector2D(wanderRadius * Math.cos(theta),
+    wanderRadius * Math.sin(theta));
 
     SteeringBehaviors(Agent agent) {
         this.agent = agent;
@@ -26,6 +39,9 @@ public class SteeringBehaviors {
 
         if (arriveTarget != null)
             force.add(arrive(arriveTarget, Deceleration.fast));
+
+        if (wandering)
+            force.add(wander());
 
         return force;
     }
@@ -104,5 +120,38 @@ public class SteeringBehaviors {
 
     public void turnOffArrive() {
         this.arriveTarget = null;
+    }
+
+
+    // ========= wander ========
+    public Vector2D wander() {
+        // first, add a small random vector to the target’s position
+        // (RandomClamped returns a value between -1 and 1)
+        wanderTarget.add(new Vector2D(
+                RandomClamped() * wanderJitter,
+                RandomClamped() * wanderJitter));
+
+        // reproject this new vector back onto a unit circle
+        wanderTarget.Normalize();
+        wanderTarget.mul(wanderRadius);
+
+        //move the target into a position WanderDist in front of the agent
+        Vector2D targetLocal = Vector2DOperations.add(wanderTarget, new Vector2D(wanderDistance, 0));
+
+        //project the target into world space
+        Vector2D targetWorld = PointToWorldSpace(targetLocal,
+                agent.heading,
+                agent.side,
+                agent.position);
+
+        return Vector2DOperations.sub(targetWorld, agent.position);
+    }
+
+    public void turnOnWander(){
+        this.wandering = true;
+    }
+
+    public void turnOffWander(){
+        this.wandering = false;
     }
 }
