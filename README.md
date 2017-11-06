@@ -1,10 +1,11 @@
 Implementation of algorithms from chapter 3 of book "Programming Game AI by Example, Mat Buckland"
 
 # Project requirements
-* Obstacle Avoidance
-* Seek, Arrive, wander
-* Wall avoidance
-* Hide, flocking
+* Obstacle Avoidance - Iza
+* Seek, Arrive, wander - Kamil
+* Wall avoidance - Iza
+* Hide, flocking - Kamil
+* Shooting should kill enemies - Kamil
 * Combining Behaviours
 
 # Resources
