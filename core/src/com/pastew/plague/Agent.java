@@ -5,18 +5,24 @@ public class Agent extends MovingEntity {
     private GameWorld gameWorld;
 
     private SteeringBehaviors steeringBehaviors;
-
+    
+//AGENT JEST BOTEM
+    
     Agent(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
         maxSpeed = 5;
         color = GameColors.enemyColor;
 
-        steeringBehaviors = new SteeringBehaviors(this);
+        steeringBehaviors = new SteeringBehaviors(this, gameWorld);
+
+        
         //steeringBehaviors.turnOnFlee(gameWorld.getPlayerVector2D());
         //steeringBehaviors.turnOnSeek(gameWorld.getPlayerVector2D());
         //steeringBehaviors.turnOnSeek(gameWorld.getColumn(0).position);
         //steeringBehaviors.turnOnArrive(gameWorld.getPlayerVector2D());
         steeringBehaviors.turnOnWander();
+        steeringBehaviors.turnOnObstacleAvoidance();
+        
     }
 
     public void update(double deltaTime) {
