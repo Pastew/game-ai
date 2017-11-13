@@ -1,9 +1,12 @@
 package com.pastew.plague;
 //
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
+import static com.pastew.plague.SteeringBehaviors.getHidingPosition;
 
 public class Player extends MovingEntity {
 
@@ -11,9 +14,11 @@ public class Player extends MovingEntity {
     private Vector2D forceDirection;
     private float moveForce;
     private Vector2D previousPosition;
+    private GameWorld gameWorld;
 
-    Player(float x, float y) {
+    Player(GameWorld gameWorld, float x, float y) {
         super();
+        this.gameWorld = gameWorld;
         position = new Vector2D(x, y);
         previousPosition = new Vector2D(0, 0);
         crosshair = new Vector2D(x, y);
@@ -35,6 +40,15 @@ public class Player extends MovingEntity {
         endOfLine.add(position);
         shapeRenderer.line((float) position.x, (float) position.y, (float) endOfLine.x, (float) endOfLine.y);
         shapeRenderer.end();
+
+        // Draw hiding spots
+        for (BaseGameEntity obstacle :gameWorld.getObstaclesList()) {
+            Vector2D hidingSpot = getHidingPosition(obstacle.position, obstacle.size, this.position);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(Color.BLACK);
+            shapeRenderer.circle((float) hidingSpot.x, (float) hidingSpot.y, size / 2);
+            shapeRenderer.end();
+        }
     }
 
     void setCrosshairPosition(int mouseX, int mouseY) {

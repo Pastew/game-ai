@@ -1,11 +1,16 @@
 package com.pastew.plague;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.compression.lzma.Base;
+
 import static com.pastew.plague.Transformation.PointToWorldSpace;
 import static com.pastew.plague.Vector2D.Vec2DDistanceSq;
+import static com.pastew.plague.Vector2D.Vec2DNormalize;
 import static com.pastew.plague.utils.RandFloat;
 import static com.pastew.plague.utils.RandomClamped;
 import static com.pastew.plague.utils.TwoPi;
 import static java.lang.Math.min;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +19,7 @@ public class SteeringBehaviors {
     private Agent agent;
 
     private GameWorld gameworld;
-    
+
     private Vector2D seekTarget;
     private Vector2D fleeTarget;
     private Vector2D arriveTarget;
@@ -27,16 +32,17 @@ public class SteeringBehaviors {
     double theta = RandFloat() * TwoPi;
     private Vector2D wanderTarget = new Vector2D(wanderRadius * Math.cos(theta),
             wanderRadius * Math.sin(theta));
-    
+
     //obstacleAvoidance
     double minDetectionBoxLength = 100.0;
-    private boolean obstacleAvoidance = false; 
-    
+    private boolean obstacleAvoidance = false;
+    private BaseGameEntity hideTarget; // Przed kim ma sie chowac
 
-    SteeringBehaviors(Agent agent, GameWorld gameworld)  {
+
+    SteeringBehaviors(Agent agent, GameWorld gameworld) {
         this.agent = agent;
         this.gameworld = gameworld;
-        
+
     }
 
     Vector2D calculate() {
@@ -57,18 +63,21 @@ public class SteeringBehaviors {
         if (wandering) {
             force.add(wander());
         }
-        
+
         if (obstacleAvoidance) {
             force.add(obstacleAvoidance());
         }
 
+        if (hideTarget != null) {
+            force.add(hide(hideTarget, gameworld.getObstaclesList()));
+        }
         return force;
     }
 
     // ======== seek ========
     private Vector2D seek(Vector2D targetPosition) {
         Vector2D targetPositionCopy = new Vector2D(targetPosition);
-        Vector2D desiredVelocity = Vector2D.Vec2DNormalize(targetPositionCopy.sub(agent.position)).mul(agent.maxSpeed);
+        Vector2D desiredVelocity = Vec2DNormalize(targetPositionCopy.sub(agent.position)).mul(agent.maxSpeed);
 
         return (desiredVelocity.sub(agent.velocity));
     }
@@ -90,7 +99,7 @@ public class SteeringBehaviors {
         }
 
         Vector2D agentPositionCopy = new Vector2D(agent.position);
-        Vector2D desiredVelocity = Vector2D.Vec2DNormalize(agentPositionCopy.sub(targetPosition)).mul(agent.maxSpeed);
+        Vector2D desiredVelocity = Vec2DNormalize(agentPositionCopy.sub(targetPosition)).mul(agent.maxSpeed);
 
         return (desiredVelocity.sub(agent.velocity));
     }
@@ -109,7 +118,7 @@ public class SteeringBehaviors {
 
         //calculate the distance to the target position
         double dist = toTarget.Length();
-        final double DISTANCE_WHEN_STOP = 60;
+        final double DISTANCE_WHEN_STOP = 10;
 
         if (dist > DISTANCE_WHEN_STOP) {
             //because Deceleration is enumerated as an int, this value is required
@@ -174,7 +183,7 @@ public class SteeringBehaviors {
     }
 
     // ==================obstacleAvoidance=======================
-    
+
     public Vector2D obstacleAvoidance() {
         //the detection box length is proportional to the agent's velocity
         double boxLength = minDetectionBoxLength + (agent.velocity.Length() / agent.maxSpeed) * minDetectionBoxLength;
@@ -195,7 +204,7 @@ public class SteeringBehaviors {
         for (BaseGameEntity obstacle : obstaclesList) {
 
 //if the obstacle has been tagged within range proceed
-            if (obstacle.position.Distance(agent.position) - obstacle.size / 2 - agent.size / 2 < boxLength && obstacle!= agent) {
+            if (obstacle.position.Distance(agent.position) - obstacle.size / 2 - agent.size / 2 < boxLength && obstacle != agent) {
 //calculate this obstacle's position in local space
                 Vector2D LocalPos = Transformation.PointToLocalSpace(obstacle.position,
                         agent.heading,
@@ -239,14 +248,14 @@ public class SteeringBehaviors {
 
         }
 
-    //if we have found an intersecting obstacle, calculate a steering
+        //if we have found an intersecting obstacle, calculate a steering
 //force away from it
         Vector2D SteeringForce = new Vector2D();
 
         if (ClosestIntersectingObstacle != null) {
 //the closer the agent is to an object, the stronger the steering force
 
-    //should be
+            //should be
             double multiplier = 1.0 + (boxLength - LocalPosOfClosestObstacle.x) / boxLength;
 
 //calculate the lateral force
@@ -263,8 +272,8 @@ public class SteeringBehaviors {
                 agent.side);
 
     }
-    
-    
+
+
     public void turnOnObstacleAvoidance() {
         this.obstacleAvoidance = true;
     }
@@ -272,4 +281,48 @@ public class SteeringBehaviors {
     public void turnOffObstacleAvoidance() {
         this.obstacleAvoidance = false;
     }
+
+    // ================== Hide =======================
+    public static Vector2D getHidingPosition(Vector2D obstaclePosition, double obstacleRadius, Vector2D targetPosition) {
+        //calculate how far away the agent is to be from the chosen obstacle’s bounding radius
+        double distanceFromBoundary = 30.0;
+        double distAway = obstacleRadius + distanceFromBoundary;
+
+        //calculate the heading toward the object from the target
+        Vector2D toObstacle = Vec2DNormalize(Vector2DOperations.sub(obstaclePosition, targetPosition));
+
+        //scale it to size and add to the obstacle's position to get the hiding spot.
+        return Vector2DOperations.add((Vector2DOperations.mul(toObstacle, distAway)), obstaclePosition);
+    }
+
+    private Vector2D hide(BaseGameEntity target, List<BaseGameEntity> obstacles){
+
+        double distanceToClosest = Double.MAX_VALUE;
+        Vector2D bestHidingSpot = null;
+
+        for (BaseGameEntity obstacle : obstacles){
+            Vector2D hidingSpot = getHidingPosition(obstacle.position, obstacle.size, target.position);
+            double distance = Vec2DDistanceSq(hidingSpot, agent.position);
+            if (distance < distanceToClosest){
+                distanceToClosest = distance;
+                bestHidingSpot = hidingSpot;
+            }
+        }
+
+        if(bestHidingSpot == null) {
+            System.out.println("Flee");
+            return flee(target.position);
+        }
+
+        System.out.println("hiding " + bestHidingSpot);
+
+        return arrive(bestHidingSpot, Deceleration.fast);
+    }
+
+    public void turnOnHide(BaseGameEntity target) {
+        this.hideTarget = target;
+    }
+    public void turnOffHide(BaseGameEntity target) {this.hideTarget = null; }
+
+
 }

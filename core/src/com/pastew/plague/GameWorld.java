@@ -11,7 +11,7 @@ import java.util.Random;
 
 class GameWorld {
 
-    private final static int ENEMIES_NUMBER = 10;
+    private final static int ENEMIES_NUMBER = 1;
     private final static int COLUMN_NUMBER = 8;
     private SpriteBatch batch;
     private Player player;
@@ -20,7 +20,7 @@ class GameWorld {
 
     GameWorld() {
         entities = new ArrayList<BaseGameEntity>();
-        player = new Player(400, 400);
+        player = new Player(this, 400, 400);
         entities.add(player);
         generateColumns();
         generateEnemies();
@@ -72,8 +72,8 @@ class GameWorld {
                 y = Gdx.graphics.getHeight() - i * 200;
 
             Agent enemy = new Agent(this);
-            enemy.position.x = x;
-            enemy.position.y = y;
+            enemy.position.x = 500;
+            enemy.position.y = 500;
 
             entities.add(enemy);
         }
@@ -166,5 +166,9 @@ class GameWorld {
             }
         }
      return obstaclesList;
+    }
+
+    public BaseGameEntity getPlayerBaseEntity() {
+        return player;
     }
 }
