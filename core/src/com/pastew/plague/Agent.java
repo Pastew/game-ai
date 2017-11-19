@@ -10,7 +10,7 @@ public class Agent extends MovingEntity {
     
     Agent(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
-        maxSpeed = 5;
+        maxSpeed = 20;
         color = GameColors.enemyColor;
 
         steeringBehaviors = new SteeringBehaviors(this, gameWorld);
