@@ -1,8 +1,5 @@
 package com.pastew.plague;
 
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.compression.lzma.Base;
-
 import static com.pastew.plague.Transformation.PointToWorldSpace;
 import static com.pastew.plague.Vector2D.Vec2DDistanceSq;
 import static com.pastew.plague.Vector2D.Vec2DNormalize;
@@ -11,7 +8,6 @@ import static com.pastew.plague.utils.RandomClamped;
 import static com.pastew.plague.utils.TwoPi;
 import static java.lang.Math.min;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SteeringBehaviors {
@@ -69,7 +65,7 @@ public class SteeringBehaviors {
         }
 
         if (hideTarget != null) {
-            force.add(hide(hideTarget, gameworld.getObstaclesList()));
+            force.add(hide(hideTarget, gameworld.getColumns()));
         }
         return force;
     }
@@ -199,7 +195,7 @@ public class SteeringBehaviors {
 
         Vector2D LocalPosOfClosestObstacle = new Vector2D();
 
-        List<BaseGameEntity> obstaclesList = gameworld.getObstaclesList();
+        List<Column> obstaclesList = gameworld.getColumns();
 
         for (BaseGameEntity obstacle : obstaclesList) {
 
@@ -295,7 +291,7 @@ public class SteeringBehaviors {
         return Vector2DOperations.add((Vector2DOperations.mul(toObstacle, distAway)), obstaclePosition);
     }
 
-    private Vector2D hide(BaseGameEntity target, List<BaseGameEntity> obstacles){
+    private Vector2D hide(BaseGameEntity target, List<Column> obstacles){
 
         double distanceToClosest = Double.MAX_VALUE;
         Vector2D bestHidingSpot = null;

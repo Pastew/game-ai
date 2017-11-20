@@ -1,7 +1,6 @@
 package com.pastew.plague;
 //
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -42,7 +41,7 @@ public class Player extends MovingEntity {
         shapeRenderer.end();
 
         // Draw hiding spots
-        for (BaseGameEntity obstacle :gameWorld.getObstaclesList()) {
+        for (BaseGameEntity obstacle :gameWorld.getColumns()) {
             Vector2D hidingSpot = getHidingPosition(obstacle.position, obstacle.size, this.position);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(Color.BLACK);
