@@ -308,11 +308,8 @@ public class SteeringBehaviors {
         }
 
         if(bestHidingSpot == null) {
-            System.out.println("Flee");
             return flee(target.position);
         }
-
-        System.out.println("hiding " + bestHidingSpot);
 
         return arrive(bestHidingSpot, Deceleration.fast);
     }
