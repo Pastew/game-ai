@@ -45,7 +45,7 @@ public class Player extends MovingEntity {
             Vector2D hidingSpot = getHidingPosition(obstacle.position, obstacle.size, this.position);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(Color.BLACK);
-            shapeRenderer.circle((float) hidingSpot.x, (float) hidingSpot.y, size / 2);
+            shapeRenderer.circle((float) hidingSpot.x, (float) hidingSpot.y, size / 4);
             shapeRenderer.end();
         }
     }

@@ -72,8 +72,8 @@ class GameWorld {
                 y = Gdx.graphics.getHeight() - i * 200;
 
             Agent enemy = new Agent(this);
-            //enemy.position.x = 500;
-            //enemy.position.y = 500;
+            enemy.position.x = x;
+            enemy.position.y = y;
 
             entities.add(enemy);
         }
@@ -161,5 +161,16 @@ class GameWorld {
 
     public BaseGameEntity getPlayerBaseEntity() {
         return player;
+    }
+
+    public List<BaseGameEntity> getObstacles(){
+        List<BaseGameEntity> obstaclesList = new ArrayList<BaseGameEntity>();
+        obstaclesList.addAll(columns);
+        for (BaseGameEntity entity : entities){
+            if( entity != player){
+                obstaclesList.add(entity);
+            }
+        }
+        return obstaclesList;
     }
 }

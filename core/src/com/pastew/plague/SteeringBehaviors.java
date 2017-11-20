@@ -1,5 +1,7 @@
 package com.pastew.plague;
 
+import com.badlogic.gdx.utils.compression.lzma.Base;
+
 import static com.pastew.plague.Transformation.PointToWorldSpace;
 import static com.pastew.plague.Vector2D.Vec2DDistanceSq;
 import static com.pastew.plague.Vector2D.Vec2DNormalize;
@@ -195,7 +197,7 @@ public class SteeringBehaviors {
 
         Vector2D LocalPosOfClosestObstacle = new Vector2D();
 
-        List<Column> obstaclesList = gameworld.getColumns();
+        List<BaseGameEntity> obstaclesList = gameworld.getObstacles();
 
         for (BaseGameEntity obstacle : obstaclesList) {
 
