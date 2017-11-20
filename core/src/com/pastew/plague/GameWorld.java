@@ -47,7 +47,7 @@ class GameWorld {
             Column column = new Column(x, y);
             boolean found = false;
             for (Column otherColumn : columns) {
-                if (column.position.Distance(otherColumn.position) <= column.size) {
+                if (column.position.Distance(otherColumn.position) <= column.size*2) {
                     found = true;
                     break;
                 }

@@ -6,7 +6,7 @@ public class Column extends BaseGameEntity {
         super();
         position = new Vector2D(x, y);
         color = GameColors.columnColor;
-        size = 150;
+        size = 100;
     }
 
 }

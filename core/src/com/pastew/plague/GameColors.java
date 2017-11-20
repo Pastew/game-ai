@@ -10,4 +10,5 @@ public final class GameColors {
     public static final Color rifleBeamColor = Color.valueOf("FF6978");
     public static final Color columnColor = Color.valueOf("6D435A");
     public static final Color enemyColor = Color.valueOf("FFFCF9");
+    public static final Color boundingBoxColor = Color.valueOf("FF7684");
 }
