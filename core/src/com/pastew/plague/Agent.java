@@ -1,5 +1,8 @@
 package com.pastew.plague;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
 public class Agent extends MovingEntity {
 
     private GameWorld gameWorld;
@@ -20,10 +23,29 @@ public class Agent extends MovingEntity {
         //steeringBehaviors.turnOnSeek(gameWorld.getPlayerVector2D());
         //steeringBehaviors.turnOnSeek(gameWorld.getColumn(0).position);
         //steeringBehaviors.turnOnArrive(gameWorld.getPlayerVector2D());
-        //steeringBehaviors.turnOnWander();
+        steeringBehaviors.turnOnWander();
         steeringBehaviors.turnOnObstacleAvoidance();
-        steeringBehaviors.turnOnHide(gameWorld.getPlayerBaseEntity());
+       // steeringBehaviors.turnOnHide(gameWorld.getPlayerBaseEntity());
         
+    }
+    
+        //colision line 
+
+    public void render() {
+        super.render();
+        
+        //show line for collision avoidance
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.CYAN);
+        double minBoxSize=100;
+        Vector2D linePosition = Vector2D.add(position, Vector2D.mul(heading, minBoxSize + (velocity.Length()/maxSpeed) *minBoxSize));
+        shapeRenderer.line((float) position.x, (float) position.y, (float) linePosition.x, (float) linePosition.y);
+
+        shapeRenderer.end();
+    }
+    
+    public GameWorld getWorld(){
+        return gameWorld;
     }
 
     public void update(double deltaTime) {
@@ -39,5 +61,8 @@ public class Agent extends MovingEntity {
         position.add(velocity);
 
         super.update(deltaTime);
+        
+        
+        
     }
 }
