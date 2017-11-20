@@ -9,11 +9,20 @@ import static com.pastew.plague.SteeringBehaviors.getHidingPosition;
 
 public class Player extends MovingEntity {
 
-    private Vector2D crosshair; // celownik
+    private GameWorld gameWorld;
+
+    // Moving
     private Vector2D forceDirection;
     private float moveForce;
     private Vector2D previousPosition;
-    private GameWorld gameWorld;
+
+    // Shooting
+    private Vector2D crosshair; // celownik
+    private boolean shooting;
+    private final float SHOOT_COOLDOWN = 1f;
+    private float shootCooldown = SHOOT_COOLDOWN;
+    private final float BEAM_DRAWING_TIME = 0.1f;
+    private float remainingBeamDrawingTime = 0f;
 
     Player(GameWorld gameWorld, float x, float y) {
         super();
@@ -25,23 +34,34 @@ public class Player extends MovingEntity {
         moveForce = 100;
         forceDirection = new Vector2D(0, 0);
         color = GameColors.playerColor;
+        shooting = false;
     }
 
     public void render() {
         super.render();
 
-        // Draw rifle beam
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(GameColors.rifleBeamColor);
-        Vector2D endOfLine = crosshair.sub(position);
-        endOfLine.Normalize();
-        endOfLine.mul(5000);
-        endOfLine.add(position);
-        shapeRenderer.line((float) position.x, (float) position.y, (float) endOfLine.x, (float) endOfLine.y);
-        shapeRenderer.end();
+        if (shooting & shootCooldown <= 0) {
+            shootCooldown = SHOOT_COOLDOWN;
+            remainingBeamDrawingTime = BEAM_DRAWING_TIME;
+        }
+        shootCooldown -= Gdx.graphics.getDeltaTime();
+
+        if (remainingBeamDrawingTime > 0) {
+            // Draw rifle beam
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(GameColors.rifleBeamColor);
+            Vector2D endOfLine = crosshair.sub(position);
+            endOfLine.Normalize();
+            endOfLine.mul(5000);
+            endOfLine.add(position);
+            shapeRenderer.line((float) position.x, (float) position.y, (float) endOfLine.x, (float) endOfLine.y);
+            shapeRenderer.end();
+
+            remainingBeamDrawingTime -= Gdx.graphics.getDeltaTime();
+        }
 
         // Draw hiding spots
-        for (BaseGameEntity obstacle :gameWorld.getColumns()) {
+        for (BaseGameEntity obstacle : gameWorld.getColumns()) {
             Vector2D hidingSpot = getHidingPosition(obstacle.position, obstacle.size, this.position);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(Color.BLACK);
@@ -97,5 +117,13 @@ public class Player extends MovingEntity {
         }
 
         super.update(deltaTime);
+    }
+
+    public void triggerPulled() {
+        shooting = true;
+    }
+
+    public void triggerReleased() {
+        shooting = false;
     }
 }

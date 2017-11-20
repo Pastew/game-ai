@@ -81,7 +81,7 @@ class GameWorld {
 
 
     void update() {
-        handleKeyboardInput();
+        handlePlayerInput();
 
         // Update each entity
         for (BaseGameEntity entity : entities)
@@ -121,7 +121,7 @@ class GameWorld {
         batch.end();
     }
 
-    private void handleKeyboardInput() {
+    private void handlePlayerInput() {
         // Moving left and right
         if (Gdx.input.isKeyPressed(Input.Keys.A))
             player.setXForceDirection(-1);
@@ -137,10 +137,15 @@ class GameWorld {
         else
             player.setYForceDirection(0);
 
-        // Crosshair
-        int mouseX = Gdx.input.getX();
-        int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
-        player.setCrosshairPosition(mouseX, mouseY);
+        if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            player.triggerPulled();
+            // Crosshair
+            int mouseX = Gdx.input.getX();
+            int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
+            player.setCrosshairPosition(mouseX, mouseY);
+        }else{
+            player.triggerReleased();
+        }
     }
 
     void dispose() {
