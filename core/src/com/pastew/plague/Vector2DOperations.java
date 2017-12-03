@@ -55,4 +55,9 @@ public class Vector2DOperations {
             return false;
         }
     }
+
+    public static double distance(Vector2D v1, Vector2D v2) {
+        Vector2D fromV1toV2 = Vector2DOperations.sub(v2, v1);
+        return fromV1toV2.getMagnitude();
+    }
 }

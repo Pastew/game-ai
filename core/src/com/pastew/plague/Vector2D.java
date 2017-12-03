@@ -73,6 +73,46 @@ public class Vector2D {
     }
 
     /**
+     * Method to obtain the projection of current vector on a given axis
+     * @param axis An axis where vector is projected on
+     * @return The projection length of current vector on given axis
+     */
+    public double projectionOn(Vector2D axis)
+    {
+        return this.dotProduct(axis.normalise());
+    }
+
+    /**
+     * Method to perform dot product with another vector
+     * @param vector2 A vector to perform dot product with current vector
+     * @return A scalar number of dot product
+     */
+    public double dotProduct(Vector2D vector2)
+    {
+        double componentX = this.x * vector2.x;
+        double componentY = this.y * vector2.y;
+        return componentX+componentY;
+    }
+
+    /**
+     * Method to obtain vector unit of current vector
+     * @return A copy of normalised vector
+     */
+    public Vector2D normalise()
+    {
+        return new Vector2D(this.x/this.getMagnitude(), this.y/this.getMagnitude());
+    }
+
+    /**
+     * Method to obtain current magnitude of vector
+     * @return Magnitude of type Number
+     */
+    public double getMagnitude()
+    {
+        return Math.sqrt(x * x + y * y);
+    }
+
+    /**
      * calculates the dot product
      * @param v2
      * @return dot product

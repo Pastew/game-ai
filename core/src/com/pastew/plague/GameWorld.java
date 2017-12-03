@@ -16,11 +16,13 @@ class GameWorld {
     private SpriteBatch batch;
     private Player player;
     private List<BaseGameEntity> entities;
+    private List<Agent> enemies;
     private List<Column> columns;
     private List<Wall> walls;
 
     GameWorld() {
         entities = new ArrayList<BaseGameEntity>();
+        enemies = new ArrayList<Agent>();
         player = new Player(this, 400, 400);
         entities.add(player);
         walls = new ArrayList<Wall>();
@@ -92,6 +94,7 @@ class GameWorld {
             enemy.position.y = y;
 
             entities.add(enemy);
+            enemies.add(enemy);
         }
     }
 
@@ -201,5 +204,23 @@ class GameWorld {
 
     List<Wall> getWalls() {
         return walls;
+    }
+
+    public List<Agent> getEnemies() {
+        return enemies;
+    }
+
+    public List<BaseGameEntity> getEntities() {
+        return entities;
+    }
+
+    public List<BaseGameEntity> getColumnsAndPlayers(){
+        List<BaseGameEntity> newList = new ArrayList<BaseGameEntity>(enemies);
+        newList.addAll(columns);
+        return newList;
+    }
+
+    public void setEntities(List<BaseGameEntity> entities) {
+        this.entities = entities;
     }
 }

@@ -4,6 +4,7 @@ package com.pastew.plague;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.compression.lzma.Base;
 
 import static com.pastew.plague.SteeringBehaviors.getHidingPosition;
 
@@ -54,13 +55,48 @@ public class Player extends MovingEntity {
             endOfLine.Normalize();
             endOfLine.mul(5000);
             endOfLine.add(position);
-            shapeRenderer.line((float) position.x, (float) position.y, (float) endOfLine.x, (float) endOfLine.y);
+
+            double x1 = position.x;
+            double y1 = position.y;
+            double x2 = endOfLine.x;
+            double y2 = endOfLine.y;
+            Vector2D line = new Vector2D(x2 - x1, y2 - y1);
+            Vector2D leftNormal = new Vector2D(-line.y, line.x);
+
+            BaseGameEntity firstEntityShotted = null;
+            for(BaseGameEntity entity : gameWorld.getColumnsAndPlayers())
+            {
+                if (entity instanceof Player)
+                    continue;
+
+                Vector2D c1_circle = new Vector2D(entity.position.x - x1, entity.position.y - y1);
+                double c1_circle_onNormal = c1_circle.projectionOn(leftNormal);
+                if (Math.abs(c1_circle_onNormal) <= entity.size/2.0) {
+                    if(firstEntityShotted == null ||
+                            Vector2DOperations.distance(entity.position, position) < Vector2DOperations.distance(firstEntityShotted.position, position))
+                    {
+                        firstEntityShotted = entity;
+                    }
+                }
+            }
+
+            if(firstEntityShotted != null){
+                System.out.println(String.format("Collision with: %s", firstEntityShotted.getClass().getSimpleName()));
+                firstEntityShotted.color = Color.CYAN;
+                line.Normalize();
+                line.mul(Vector2DOperations.distance(position, firstEntityShotted.position) - firstEntityShotted.size/2.0);
+                x2 = position.x + line.x;
+                y2 = position.y + line.y;
+            }
+
+            shapeRenderer.line((float) position.x, (float) position.y, (float) x2, (float) y2);
             shapeRenderer.end();
 
             remainingBeamDrawingTime -= Gdx.graphics.getDeltaTime();
         }
 
         // Draw hiding spots
+        /*
         for (BaseGameEntity obstacle : gameWorld.getColumns()) {
             Vector2D hidingSpot = getHidingPosition(obstacle.position, obstacle.size, this.position);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -68,6 +104,11 @@ public class Player extends MovingEntity {
             shapeRenderer.circle((float) hidingSpot.x, (float) hidingSpot.y, size / 4);
             shapeRenderer.end();
         }
+        */
+    }
+
+    private BaseGameEntity getFirstEntityShotted() {
+        return null;
     }
 
     void setCrosshairPosition(int mouseX, int mouseY) {

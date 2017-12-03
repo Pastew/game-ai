@@ -26,7 +26,7 @@ public class Agent extends MovingEntity {
         steeringBehaviors.turnOnWander();
         steeringBehaviors.turnOnObstacleAvoidance();
         steeringBehaviors.turnOnWallAvoidance();
-       // steeringBehaviors.turnOnHide(gameWorld.getPlayerBaseEntity());
+        //steeringBehaviors.turnOnHide(gameWorld.getPlayerBaseEntity());
         
     }
     
