@@ -17,17 +17,31 @@ class GameWorld {
     private Player player;
     private List<BaseGameEntity> entities;
     private List<Column> columns;
+    private List<Wall> walls;
 
     GameWorld() {
         entities = new ArrayList<BaseGameEntity>();
         player = new Player(this, 400, 400);
         entities.add(player);
+        walls = new ArrayList<Wall>();
+        generateWalls();
         generateColumns();
         generateEnemies();
-
         batch = new SpriteBatch();
+        
     }
 
+    private void generateWalls() {
+        Wall left = new Wall(new Vector2D(0,Gdx.graphics.getHeight()), new Vector2D(0,0));
+        Wall right = new Wall(new Vector2D(Gdx.graphics.getWidth(),0), new Vector2D(Gdx.graphics.getWidth(),Gdx.graphics.getHeight()));
+        Wall top = new Wall(new Vector2D(Gdx.graphics.getWidth(),Gdx.graphics.getHeight()), new Vector2D(0,Gdx.graphics.getHeight()));
+        Wall bottom = new Wall(new Vector2D(0,0), new Vector2D(Gdx.graphics.getWidth(),0));
+
+        walls.add(left);
+        walls.add(right);
+        walls.add(top);
+        walls.add(bottom);
+    }
 
     private void generateColumns() {
         columns = new ArrayList<Column>();
@@ -47,7 +61,7 @@ class GameWorld {
             Column column = new Column(x, y);
             boolean found = false;
             for (Column otherColumn : columns) {
-                if (column.position.Distance(otherColumn.position) <= column.size*2) {
+                if (column.position.Distance(otherColumn.position) <= column.size * 2) {
                     found = true;
                     break;
                 }
@@ -65,11 +79,13 @@ class GameWorld {
         for (int i = 0; i < ENEMIES_NUMBER; ++i) {
             float x = 10;
             float y = 10;
-            if (random.nextBoolean())
+            if (random.nextBoolean()) {
                 x = Gdx.graphics.getWidth() - i * 200;
+            }
 
-            if (random.nextBoolean())
+            if (random.nextBoolean()) {
                 y = Gdx.graphics.getHeight() - i * 200;
+            }
 
             Agent enemy = new Agent(this);
             enemy.position.x = x;
@@ -79,13 +95,13 @@ class GameWorld {
         }
     }
 
-
     void update() {
         handlePlayerInput();
 
         // Update each entity
-        for (BaseGameEntity entity : entities)
+        for (BaseGameEntity entity : entities) {
             entity.update(Gdx.graphics.getDeltaTime());
+        }
 
         checkPlayerCollisions();
     }
@@ -112,38 +128,42 @@ class GameWorld {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        for (BaseGameEntity entity : entities)
+        for (BaseGameEntity entity : entities) {
             entity.render();
+        }
         //columns
-        for (Column column : columns)
+        for (Column column : columns) {
             column.render();
+        }
 
         batch.end();
     }
 
     private void handlePlayerInput() {
         // Moving left and right
-        if (Gdx.input.isKeyPressed(Input.Keys.A))
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             player.setXForceDirection(-1);
-        else if (Gdx.input.isKeyPressed(Input.Keys.D))
+        } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             player.setXForceDirection(1);
-        else
+        } else {
             player.setXForceDirection(0);
+        }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W))
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             player.setYForceDirection(1);
-        else if (Gdx.input.isKeyPressed(Input.Keys.S))
+        } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
             player.setYForceDirection(-1);
-        else
+        } else {
             player.setYForceDirection(0);
+        }
 
-        if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             player.triggerPulled();
             // Crosshair
             int mouseX = Gdx.input.getX();
             int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
             player.setCrosshairPosition(mouseX, mouseY);
-        }else{
+        } else {
             player.triggerReleased();
         }
     }
@@ -159,23 +179,27 @@ class GameWorld {
     public Column getColumn(int index) {
         return columns.get(index);
     }
-    
-    public List<Column> getColumns(){
-     return columns;
+
+    public List<Column> getColumns() {
+        return columns;
     }
 
     public BaseGameEntity getPlayerBaseEntity() {
         return player;
     }
 
-    public List<BaseGameEntity> getObstacles(){
+    public List<BaseGameEntity> getObstacles() {
         List<BaseGameEntity> obstaclesList = new ArrayList<BaseGameEntity>();
         obstaclesList.addAll(columns);
-        for (BaseGameEntity entity : entities){
-            if( entity != player){
+        for (BaseGameEntity entity : entities) {
+            if (entity != player) {
                 obstaclesList.add(entity);
             }
         }
         return obstaclesList;
+    }
+
+    List<Wall> getWalls() {
+        return walls;
     }
 }

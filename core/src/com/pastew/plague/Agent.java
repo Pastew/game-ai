@@ -13,7 +13,7 @@ public class Agent extends MovingEntity {
     
     Agent(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
-        maxSpeed = 20;
+        maxSpeed = 30;
         color = GameColors.enemyColor;
 
         steeringBehaviors = new SteeringBehaviors(this, gameWorld);
@@ -23,9 +23,10 @@ public class Agent extends MovingEntity {
         //steeringBehaviors.turnOnSeek(gameWorld.getPlayerVector2D());
         //steeringBehaviors.turnOnSeek(gameWorld.getColumn(0).position);
         //steeringBehaviors.turnOnArrive(gameWorld.getPlayerVector2D());
-        //steeringBehaviors.turnOnWander();
+        steeringBehaviors.turnOnWander();
         steeringBehaviors.turnOnObstacleAvoidance();
-        steeringBehaviors.turnOnHide(gameWorld.getPlayerBaseEntity());
+        steeringBehaviors.turnOnWallAvoidance();
+       // steeringBehaviors.turnOnHide(gameWorld.getPlayerBaseEntity());
         
     }
     
@@ -38,7 +39,7 @@ public class Agent extends MovingEntity {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.CYAN);
         double minBoxSize=30;
-        Vector2D linePosition = Vector2D.add(position, Vector2D.mul(heading, minBoxSize + (velocity.Length()/maxSpeed) *minBoxSize));
+        Vector2D linePosition = Vector2D.add(position, Vector2D.mul(heading, minBoxSize + (velocity.Length()/maxSpeed) * minBoxSize*2));
         shapeRenderer.line((float) position.x, (float) position.y, (float) linePosition.x, (float) linePosition.y);
 
         shapeRenderer.end();

@@ -3,12 +3,17 @@ package com.pastew.plague;
 import com.badlogic.gdx.utils.compression.lzma.Base;
 
 import static com.pastew.plague.Transformation.PointToWorldSpace;
+import static com.pastew.plague.Transformation.Vec2DRotateAroundOrigin;
 import static com.pastew.plague.Vector2D.Vec2DDistanceSq;
 import static com.pastew.plague.Vector2D.Vec2DNormalize;
+import static com.pastew.plague.Vector2D.mul;
+import static com.pastew.plague.Vector2D.sub;
+import static com.pastew.plague.Vector2DOperations.LineIntersection2D;
 import static com.pastew.plague.utils.RandFloat;
 import static com.pastew.plague.utils.RandomClamped;
 import static com.pastew.plague.utils.TwoPi;
 import static java.lang.Math.min;
+import java.util.ArrayList;
 
 import java.util.List;
 
@@ -36,10 +41,18 @@ public class SteeringBehaviors {
     private boolean obstacleAvoidance = false;
     private BaseGameEntity hideTarget; // Przed kim ma sie chowac
 
-
+     //wallAvoidance
+    private List<Vector2D>  m_Feelers = new ArrayList<Vector2D>();
+    private double m_dWallDetectionFeelerLength = 40.0;
+    private boolean wallAvoidance;
+    
+    
+    
     SteeringBehaviors(Agent agent, GameWorld gameworld) {
         this.agent = agent;
         this.gameworld = gameworld;
+        
+       
 
     }
 
@@ -68,6 +81,9 @@ public class SteeringBehaviors {
 
         if (hideTarget != null) {
             force.add(hide(hideTarget, gameworld.getColumns()));
+        }
+        if(wallAvoidance){
+            force.add(WallAvoidance());
         }
         return force;
     }
@@ -181,7 +197,6 @@ public class SteeringBehaviors {
     }
 
     // ==================obstacleAvoidance=======================
-
     public Vector2D obstacleAvoidance() {
         //the detection box length is proportional to the agent's velocity
         double boxLength = minDetectionBoxLength + (agent.velocity.Length() / agent.maxSpeed) * minDetectionBoxLength;
@@ -271,7 +286,6 @@ public class SteeringBehaviors {
 
     }
 
-
     public void turnOnObstacleAvoidance() {
         this.obstacleAvoidance = true;
     }
@@ -280,6 +294,84 @@ public class SteeringBehaviors {
         this.obstacleAvoidance = false;
     }
 
+    
+    /**
+     *  Creates the antenna utilized by WallAvoidance
+     */
+    private void CreateFeelers() {
+        
+        
+        
+        m_Feelers.clear();
+        //feeler pointing straight in front
+        m_Feelers.add(Vector2DOperations.add(agent.position, mul(m_dWallDetectionFeelerLength, agent.heading)));
+
+        //feeler to left
+        Vector2D temp = new Vector2D(agent.heading);
+        Vec2DRotateAroundOrigin(temp, (Math.PI/2) * 3.5f);
+        m_Feelers.add(Vector2DOperations.add(agent.position, mul(m_dWallDetectionFeelerLength / 2.0f, temp)));
+
+        //feeler to right
+        temp = new Vector2D(agent.heading);
+        Vec2DRotateAroundOrigin(temp, (Math.PI/2) * 0.5f);
+        m_Feelers.add(Vector2DOperations.add(agent.position, mul(m_dWallDetectionFeelerLength / 2.0f, temp)));
+    }
+
+ 
+    
+    //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    // ================== Wall Avoidance =======================
+    Vector2D WallAvoidance() {
+        List<Wall> walls = gameworld.getWalls();
+//the feelers are contained in a std::vector, m_Feelers
+        double DistToThisIP = 0.0;
+        double DistToClosestIP = Double.MAX_VALUE;
+//this will hold an index into the vector of walls
+        int ClosestWall = -1;
+        Vector2D SteeringForce = new Vector2D();
+        Vector2D point = new Vector2D();//used for storing temporary info
+        Vector2D ClosestPoint = new Vector2D(); //holds the closest intersection point
+        
+        CreateFeelers();
+   
+//examine each feeler in turn
+        for (int flr = 0; flr < m_Feelers.size(); ++flr) {
+//run through each wall checking for any intersection points
+            for (int w = 0; w < walls.size(); ++w) {
+                if (LineIntersection2D(agent.position, m_Feelers.get(flr), walls.get(w).From(), walls.get(w).To(), DistToThisIP, point)) {
+
+//is this the closest found so far? If so keep a record
+                    if (DistToThisIP < DistToClosestIP) {
+                        DistToClosestIP = DistToThisIP;
+                        ClosestWall = w;
+                        ClosestPoint = point;
+                    }
+                }
+            }//next wall
+//if an intersection point has been detected, calculate a force
+//that will direct the agent away
+            if (ClosestWall >= 0) {
+//calculate by what distance the projected position of the agent
+//will overshoot the wall
+                Vector2D OverShoot = sub(m_Feelers.get(flr), ClosestPoint);
+//create a force in the direction of the wall normal, with a
+//magnitude of the overshoot
+                SteeringForce = mul(walls.get(ClosestWall).Normal(), OverShoot.Length());
+            }
+        }//next feeler
+        return SteeringForce;
+    }
+
+    
+     void turnOnWallAvoidance() {
+        this.wallAvoidance = true;
+    }
+     
+      void turnOffWallAvoidance() {
+        this.wallAvoidance = false;
+    }
+    
+    //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     // ================== Hide =======================
     public static Vector2D getHidingPosition(Vector2D obstaclePosition, double obstacleRadius, Vector2D targetPosition) {
         //calculate how far away the agent is to be from the chosen obstacle’s bounding radius
@@ -293,21 +385,21 @@ public class SteeringBehaviors {
         return Vector2DOperations.add((Vector2DOperations.mul(toObstacle, distAway)), obstaclePosition);
     }
 
-    private Vector2D hide(BaseGameEntity target, List<Column> obstacles){
+    private Vector2D hide(BaseGameEntity target, List<Column> obstacles) {
 
         double distanceToClosest = Double.MAX_VALUE;
         Vector2D bestHidingSpot = null;
 
-        for (BaseGameEntity obstacle : obstacles){
+        for (BaseGameEntity obstacle : obstacles) {
             Vector2D hidingSpot = getHidingPosition(obstacle.position, obstacle.size, target.position);
             double distance = Vec2DDistanceSq(hidingSpot, agent.position);
-            if (distance < distanceToClosest){
+            if (distance < distanceToClosest) {
                 distanceToClosest = distance;
                 bestHidingSpot = hidingSpot;
             }
         }
 
-        if(bestHidingSpot == null) {
+        if (bestHidingSpot == null) {
             return flee(target.position);
         }
 
@@ -317,7 +409,11 @@ public class SteeringBehaviors {
     public void turnOnHide(BaseGameEntity target) {
         this.hideTarget = target;
     }
-    public void turnOffHide(BaseGameEntity target) {this.hideTarget = null; }
 
+    public void turnOffHide(BaseGameEntity target) {
+        this.hideTarget = null;
+    }
+
+   
 
 }
