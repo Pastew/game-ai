@@ -60,4 +60,10 @@ public class Vector2DOperations {
         Vector2D fromV1toV2 = Vector2DOperations.sub(v2, v1);
         return fromV1toV2.getMagnitude();
     }
+
+    public static boolean inFrontOf(Vector2D v1, Vector2D v2) {
+        // TODO: To nie działa, można strzelać w tył
+        double dot = v1.x*v2.x + v1.y*v2.y;
+        return (dot > 0);
+    }
 }

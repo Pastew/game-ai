@@ -70,6 +70,8 @@ public class Player extends MovingEntity {
                     continue;
 
                 Vector2D c1_circle = new Vector2D(entity.position.x - x1, entity.position.y - y1);
+                if(!Vector2DOperations.inFrontOf(Vector2DOperations.add(this.heading, this.position),entity.position))
+                    continue;
                 double c1_circle_onNormal = c1_circle.projectionOn(leftNormal);
                 if (Math.abs(c1_circle_onNormal) <= entity.size/2.0) {
                     if(firstEntityShotted == null ||
