@@ -82,13 +82,16 @@ public class Player extends MovingEntity {
 
             if(firstEntityShotted != null){
                 System.out.println(String.format("Collision with: %s", firstEntityShotted.getClass().getSimpleName()));
-                firstEntityShotted.color = Color.CYAN;
-                line.Normalize();
-                line.mul(Vector2DOperations.distance(position, firstEntityShotted.position) - firstEntityShotted.size/2.0);
-                x2 = position.x + line.x;
-                y2 = position.y + line.y;
+                if (firstEntityShotted instanceof Agent) {
+                    gameWorld.destroy(firstEntityShotted);
+                }
+                    //firstEntityShotted.color = Color.CYAN;
+                    line.Normalize();
+                    line.mul(Vector2DOperations.distance(position, firstEntityShotted.position) - firstEntityShotted.size/2.0);
+                    x2 = position.x + line.x;
+                    y2 = position.y + line.y;
 
-                remainingBeamDrawingTime = 0;
+                //remainingBeamDrawingTime = 0;
             }
 
             shapeRenderer.line((float) position.x, (float) position.y, (float) x2, (float) y2);

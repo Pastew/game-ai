@@ -19,10 +19,13 @@ class GameWorld {
     private List<Agent> enemies;
     private List<Column> columns;
     private List<Wall> walls;
+    private List<BaseGameEntity> entitiesToDestroy;
 
     GameWorld() {
         entities = new ArrayList<BaseGameEntity>();
         enemies = new ArrayList<Agent>();
+        entitiesToDestroy = new ArrayList<BaseGameEntity>();
+
         player = new Player(this, 400, 400);
         entities.add(player);
         walls = new ArrayList<Wall>();
@@ -30,7 +33,6 @@ class GameWorld {
         generateColumns();
         generateEnemies();
         batch = new SpriteBatch();
-        
     }
 
     private void generateWalls() {
@@ -99,6 +101,7 @@ class GameWorld {
     }
 
     void update() {
+        destroyEntities();
         handlePlayerInput();
 
         // Update each entity
@@ -107,6 +110,15 @@ class GameWorld {
         }
 
         checkPlayerCollisions();
+    }
+
+    private void destroyEntities() {
+        for(BaseGameEntity entity : entitiesToDestroy) {
+            if (entity instanceof Agent)
+                enemies.remove(entity);
+
+            entities.remove(entity);
+        }
     }
 
     //checking player collisions with columns
@@ -222,5 +234,9 @@ class GameWorld {
 
     public void setEntities(List<BaseGameEntity> entities) {
         this.entities = entities;
+    }
+
+    public void destroy(BaseGameEntity entity) {
+        entitiesToDestroy.add(entity);
     }
 }
