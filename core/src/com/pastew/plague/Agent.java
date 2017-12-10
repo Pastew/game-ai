@@ -13,8 +13,11 @@ public class Agent extends MovingEntity {
     
     Agent(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
-        maxSpeed = 30;
+        maxSpeed = Parameters.BOT_MAX_SPEED;
+        maxForce = Parameters.BOT_MAX_FORCE;
+
         color = GameColors.enemyColor;
+
 
         steeringBehaviors = new SteeringBehaviors(this, gameWorld);
 
@@ -23,26 +26,27 @@ public class Agent extends MovingEntity {
         //steeringBehaviors.turnOnSeek(gameWorld.getPlayerVector2D());
         //steeringBehaviors.turnOnSeek(gameWorld.getColumn(0).position);
         //steeringBehaviors.turnOnArrive(gameWorld.getPlayerVector2D());
-        steeringBehaviors.turnOnWander();
+        //steeringBehaviors.turnOnWander();
         steeringBehaviors.turnOnObstacleAvoidance();
         steeringBehaviors.turnOnWallAvoidance();
-        //steeringBehaviors.turnOnHide(gameWorld.getPlayerBaseEntity());
-        
+        steeringBehaviors.turnOnHide(gameWorld.getPlayerBaseEntity());
     }
     
         //colision line 
 
     public void render() {
         super.render();
-        
-        //show line for collision avoidance
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.CYAN);
-        double minBoxSize=30;
-        Vector2D linePosition = Vector2D.add(position, Vector2D.mul(heading, minBoxSize + (velocity.Length()/maxSpeed) * minBoxSize*2));
-        shapeRenderer.line((float) position.x, (float) position.y, (float) linePosition.x, (float) linePosition.y);
 
-        shapeRenderer.end();
+        if(Parameters.DRAW_BOT_BOUNDING_BOX) {
+            //show line for collision avoidance
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(Color.CYAN);
+            double minBoxSize = 30;
+            Vector2D linePosition = Vector2D.add(position, Vector2D.mul(heading, minBoxSize + (velocity.Length() / maxSpeed) * minBoxSize * 2));
+            shapeRenderer.line((float) position.x, (float) position.y, (float) linePosition.x, (float) linePosition.y);
+
+            shapeRenderer.end();
+        }
     }
     
     public GameWorld getWorld(){

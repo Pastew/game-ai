@@ -4,9 +4,6 @@ package com.pastew.plague;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.compression.lzma.Base;
-
-import static com.pastew.plague.SteeringBehaviors.getHidingPosition;
 
 public class Player extends MovingEntity {
 
@@ -31,8 +28,8 @@ public class Player extends MovingEntity {
         position = new Vector2D(x, y);
         previousPosition = new Vector2D(0, 0);
         crosshair = new Vector2D(x, y);
-        maxSpeed = 5;
-        moveForce = 100;
+        maxSpeed = Parameters.PLAYER_MAX_SPEED;
+        moveForce = Parameters.PLAYER_MOVE_FORCE;
         forceDirection = new Vector2D(0, 0);
         color = GameColors.playerColor;
         shooting = false;
@@ -101,17 +98,6 @@ public class Player extends MovingEntity {
 
             remainingBeamDrawingTime -= Gdx.graphics.getDeltaTime();
         }
-
-        // Draw hiding spots
-        /*
-        for (BaseGameEntity obstacle : gameWorld.getColumns()) {
-            Vector2D hidingSpot = getHidingPosition(obstacle.position, obstacle.size, this.position);
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(Color.BLACK);
-            shapeRenderer.circle((float) hidingSpot.x, (float) hidingSpot.y, size / 4);
-            shapeRenderer.end();
-        }
-        */
     }
 
     private BaseGameEntity getFirstEntityShotted() {

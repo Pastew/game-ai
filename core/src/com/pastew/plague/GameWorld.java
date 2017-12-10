@@ -11,7 +11,6 @@ import java.util.Random;
 
 class GameWorld {
 
-    private final static int ENEMIES_NUMBER = 10;
     private final static int COLUMN_NUMBER = 8;
     private SpriteBatch batch;
     private Player player;
@@ -80,7 +79,7 @@ class GameWorld {
     private void generateEnemies() {
         Random random = new Random();
 
-        for (int i = 0; i < ENEMIES_NUMBER; ++i) {
+        for (int i = 0; i < Parameters.BOTS_NUMBER; ++i) {
             float x = 10;
             float y = 10;
             if (random.nextBoolean()) {

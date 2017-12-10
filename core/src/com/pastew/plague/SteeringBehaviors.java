@@ -1,7 +1,5 @@
 package com.pastew.plague;
 
-import com.badlogic.gdx.utils.compression.lzma.Base;
-
 import static com.pastew.plague.Transformation.PointToWorldSpace;
 import static com.pastew.plague.Transformation.Vec2DRotateAroundOrigin;
 import static com.pastew.plague.Vector2D.Vec2DDistanceSq;
@@ -13,6 +11,7 @@ import static com.pastew.plague.utils.RandFloat;
 import static com.pastew.plague.utils.RandomClamped;
 import static com.pastew.plague.utils.TwoPi;
 import static java.lang.Math.min;
+
 import java.util.ArrayList;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class SteeringBehaviors {
     private Vector2D fleeTarget;
     private Vector2D arriveTarget;
 
-    // Wander
+    //wander
     private boolean wandering = false;
     double wanderRadius = 1.2; // radius of the constraining circle
     double wanderDistance = 1.0; // distance the wander circle is projected in front of the agent
@@ -41,51 +40,91 @@ public class SteeringBehaviors {
     private boolean obstacleAvoidance = false;
     private BaseGameEntity hideTarget; // Przed kim ma sie chowac
 
-     //wallAvoidance
-    private List<Vector2D>  m_Feelers = new ArrayList<Vector2D>();
+    //wallAvoidance
+    private List<Vector2D> m_Feelers = new ArrayList<Vector2D>();
     private double m_dWallDetectionFeelerLength = 40.0;
     private boolean wallAvoidance;
-    
-    
-    
+
     SteeringBehaviors(Agent agent, GameWorld gameworld) {
         this.agent = agent;
         this.gameworld = gameworld;
-        
-       
-
     }
 
     Vector2D calculate() {
-        Vector2D force = new Vector2D();
+        Vector2D steeringForce = new Vector2D(0, 0);
+        Vector2D force = new Vector2D(0, 0);
 
-        if (seekTarget != null) {
-            force.add(seek(seekTarget));
-        }
+        // Zachowania są posortowane od tych najważniejszych do mniej ważnych.
 
-        if (fleeTarget != null) {
-            force.add(flee(fleeTarget));
-        }
-
-        if (arriveTarget != null) {
-            force.add(arrive(arriveTarget, Deceleration.fast));
-        }
-
-        if (wandering) {
-            force.add(wander());
+        if (wallAvoidance) {
+            force = WallAvoidance();
+            force.mul(Parameters.WALL_AVOIDANCE_MULTIPLIER);
+            if (!AccumulateForce(steeringForce, force)){
+                System.out.println("Ending with wall avoidance");
+                return steeringForce;
+            }
         }
 
         if (obstacleAvoidance) {
-            force.add(obstacleAvoidance());
+            force = obstacleAvoidance();
+            force.mul(Parameters.OBSTACLE_AVOIDANCE_MULTIPLIER);
+            if (!AccumulateForce(steeringForce, force)) {
+                System.out.println("Ending with obstacle avoidance");
+                return steeringForce;
+            }
+
         }
 
         if (hideTarget != null) {
-            force.add(hide(hideTarget, gameworld.getColumns()));
+            force = hide(hideTarget, gameworld.getColumns());
+            force.mul(Parameters.HIDE_MULTIPLIER);
+            if (!AccumulateForce(steeringForce, force)) {
+                System.out.println("Ending with hide ");
+                return steeringForce;
+            }
         }
-        if(wallAvoidance){
-            force.add(WallAvoidance());
+
+        if (seekTarget != null) {
+            force = seek(seekTarget);
+            force.mul(Parameters.SEEK_AVOIDANCE_MULTIPLIER);
+            if (!AccumulateForce(steeringForce, force)){
+                System.out.println("Ending with seek ");
+                return steeringForce;
+            }
         }
-        return force;
+
+        if (wandering) {
+            force = wander();
+            force.mul(Parameters.WANDER_MULTIPLIER);
+            if (!AccumulateForce(steeringForce, force)){
+                System.out.println("Ending with wander ");
+                return steeringForce;
+            }
+        }
+
+//        if (fleeTarget != null) {
+//            steeringForce.add(flee(fleeTarget));
+//        }
+
+//        if (arriveTarget != null) {
+//            steeringForce.add(arrive(arriveTarget, Deceleration.fast));
+//        }
+
+        return steeringForce;
+    }
+
+    private boolean AccumulateForce(Vector2D steeringForce, Vector2D forceToAdd) {
+        double magnitudeSoFar = steeringForce.Length();
+        double magnitudeRemaining = agent.maxForce - magnitudeSoFar;
+        if (magnitudeRemaining <= 0.0) return false;
+        double magnitudeToAdd = forceToAdd.Length();
+        if (magnitudeToAdd < magnitudeRemaining) {
+            steeringForce.add(forceToAdd);
+        } else {
+            steeringForce.add(forceToAdd.normalise().mul(magnitudeRemaining));
+        }
+
+        return true;
     }
 
     // ======== seek ========
@@ -132,12 +171,12 @@ public class SteeringBehaviors {
 
         //calculate the distance to the target position
         double dist = toTarget.Length();
-        final double DISTANCE_WHEN_STOP = 20;
+        final double DISTANCE_WHEN_STOP = 100;
 
         if (dist > DISTANCE_WHEN_STOP) {
             //because Deceleration is enumerated as an int, this value is required
             //to provide fine tweaking of the deceleration.
-            final double DecelerationTweaker = 0.3;
+            final double DecelerationTweaker = 1.3;
 
             //calculate the speed required to reach the target given the desired
             //deceleration
@@ -294,31 +333,29 @@ public class SteeringBehaviors {
         this.obstacleAvoidance = false;
     }
 
-    
+
     /**
-     *  Creates the antenna utilized by WallAvoidance
+     * Creates the antenna utilized by WallAvoidance
      */
     private void CreateFeelers() {
-        
-        
-        
+
+
         m_Feelers.clear();
         //feeler pointing straight in front
         m_Feelers.add(Vector2DOperations.add(agent.position, mul(m_dWallDetectionFeelerLength, agent.heading)));
 
         //feeler to left
         Vector2D temp = new Vector2D(agent.heading);
-        Vec2DRotateAroundOrigin(temp, (Math.PI/2) * 3.5f);
+        Vec2DRotateAroundOrigin(temp, (Math.PI / 2) * 3.5f);
         m_Feelers.add(Vector2DOperations.add(agent.position, mul(m_dWallDetectionFeelerLength / 2.0f, temp)));
 
         //feeler to right
         temp = new Vector2D(agent.heading);
-        Vec2DRotateAroundOrigin(temp, (Math.PI/2) * 0.5f);
+        Vec2DRotateAroundOrigin(temp, (Math.PI / 2) * 0.5f);
         m_Feelers.add(Vector2DOperations.add(agent.position, mul(m_dWallDetectionFeelerLength / 2.0f, temp)));
     }
 
- 
-    
+
     //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     // ================== Wall Avoidance =======================
     Vector2D WallAvoidance() {
@@ -331,9 +368,9 @@ public class SteeringBehaviors {
         Vector2D SteeringForce = new Vector2D();
         Vector2D point = new Vector2D();//used for storing temporary info
         Vector2D ClosestPoint = new Vector2D(); //holds the closest intersection point
-        
+
         CreateFeelers();
-   
+
 //examine each feeler in turn
         for (int flr = 0; flr < m_Feelers.size(); ++flr) {
 //run through each wall checking for any intersection points
@@ -362,15 +399,15 @@ public class SteeringBehaviors {
         return SteeringForce;
     }
 
-    
-     void turnOnWallAvoidance() {
+
+    void turnOnWallAvoidance() {
         this.wallAvoidance = true;
     }
-     
-      void turnOffWallAvoidance() {
+
+    void turnOffWallAvoidance() {
         this.wallAvoidance = false;
     }
-    
+
     //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     // ================== Hide =======================
     public static Vector2D getHidingPosition(Vector2D obstaclePosition, double obstacleRadius, Vector2D targetPosition) {
@@ -414,6 +451,5 @@ public class SteeringBehaviors {
         this.hideTarget = null;
     }
 
-   
 
 }

@@ -15,6 +15,7 @@ public class MovingEntity extends BaseGameEntity {
 
     float mass;
     float maxSpeed;
+    double maxForce;
 
     MovingEntity() {
         super();
