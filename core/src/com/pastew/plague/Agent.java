@@ -26,7 +26,7 @@ public class Agent extends MovingEntity {
         //steeringBehaviors.turnOnSeek(gameWorld.getPlayerVector2D());
         //steeringBehaviors.turnOnSeek(gameWorld.getColumn(0).position);
         //steeringBehaviors.turnOnArrive(gameWorld.getPlayerVector2D());
-        //steeringBehaviors.turnOnWander();
+        steeringBehaviors.turnOnWander();
         steeringBehaviors.turnOnObstacleAvoidance();
         steeringBehaviors.turnOnWallAvoidance();
         steeringBehaviors.turnOnHide(gameWorld.getPlayerBaseEntity());
@@ -41,7 +41,7 @@ public class Agent extends MovingEntity {
             //show line for collision avoidance
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.CYAN);
-            double minBoxSize = 30;
+            double minBoxSize = steeringBehaviors.boxLength;
             Vector2D linePosition = Vector2D.add(position, Vector2D.mul(heading, minBoxSize + (velocity.Length() / maxSpeed) * minBoxSize * 2));
             shapeRenderer.line((float) position.x, (float) position.y, (float) linePosition.x, (float) linePosition.y);
 

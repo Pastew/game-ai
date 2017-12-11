@@ -28,15 +28,15 @@ public class SteeringBehaviors {
 
     //wander
     private boolean wandering = false;
-    double wanderRadius = 1.2; // radius of the constraining circle
-    double wanderDistance = 1.0; // distance the wander circle is projected in front of the agent
-    double wanderJitter = 80.0; // maximum amount of random displacement that can be added to the target each second.
+    double wanderRadius = Parameters.WANDER_RADIUS; // radius of the constraining circle
+    double wanderDistance = Parameters.WANDER_DISTANCE; // distance the wander circle is projected in front of the agent
+    double wanderJitter = Parameters.WANDER_JITTER; // maximum amount of random displacement that can be added to the target each second.
     double theta = RandFloat() * TwoPi;
     private Vector2D wanderTarget = new Vector2D(wanderRadius * Math.cos(theta),
             wanderRadius * Math.sin(theta));
 
     //obstacleAvoidance
-    double minDetectionBoxLength = 100.0;
+    double minDetectionBoxLength = Parameters.OBSTACLE_AVOIDANCE_MIN_DETECTION_BOX_LENGTH;
     private boolean obstacleAvoidance = false;
     private BaseGameEntity hideTarget; // Przed kim ma sie chowac
 
@@ -44,6 +44,7 @@ public class SteeringBehaviors {
     private List<Vector2D> m_Feelers = new ArrayList<Vector2D>();
     private double m_dWallDetectionFeelerLength = 40.0;
     private boolean wallAvoidance;
+    public double boxLength = 0;
 
     SteeringBehaviors(Agent agent, GameWorld gameworld) {
         this.agent = agent;
@@ -238,7 +239,7 @@ public class SteeringBehaviors {
     // ==================obstacleAvoidance=======================
     public Vector2D obstacleAvoidance() {
         //the detection box length is proportional to the agent's velocity
-        double boxLength = minDetectionBoxLength + (agent.velocity.Length() / agent.maxSpeed) * minDetectionBoxLength;
+        boxLength = minDetectionBoxLength + (agent.velocity.Length() / agent.maxSpeed) * minDetectionBoxLength;
 
         //tag all obstacles within range of the box for processing
 //m_pVehicle->World()->TagObstaclesWithinViewRange(m_pVehicle, m_dDBoxLength);
