@@ -150,6 +150,7 @@ class GameWorld {
             column.render();
         }
 
+        //Parameters.render(batch, Gdx.graphics.getDeltaTime());
         batch.end();
     }
 

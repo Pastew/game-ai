@@ -1,8 +1,23 @@
 package com.pastew.plague;
 
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+
+import java.awt.Font;
 
 class Parameters {
+
+    private static BitmapFont font;
+
+    Parameters(){
+        font = new BitmapFont();
+
+        font.setColor(Color.RED);
+    }
+
     // Player
     static float PLAYER_MOVE_FORCE = 10;
     static float PLAYER_MAX_SPEED = 5;
@@ -28,4 +43,11 @@ class Parameters {
 
     // Debug draw
     static final boolean DRAW_BOT_BOUNDING_BOX = true;
+
+
+    public static void render(Batch batch, float dt )
+    {
+        //batch.setProjectionMatrix(camera.combined); //or your matrix to draw GAME WORLD, not UI
+        font.draw(batch, "Hello World!", 200, 200);
+    }
 }
