@@ -5,10 +5,11 @@ package com.pastew.plague;
 import com.badlogic.gdx.graphics.Color;
 
 public final class GameColors {
-    public static final Color bgColor = Color.valueOf("352D39");
-    public static final Color playerColor = Color.valueOf("B1EDE8");
-    public static final Color rifleBeamColor = Color.valueOf("FF6978");
-    public static final Color columnColor = Color.valueOf("6D435A");
-    public static final Color enemyColor = Color.valueOf("FFFCF9");
-    public static final Color boundingBoxColor = Color.valueOf("FF7684");
+    public static Color bgColor = Color.valueOf("352D39");
+    public static Color playerColor = Color.valueOf("B1EDE8");
+    public static Color rifleBeamColor = Color.valueOf("FF6978");
+    public static Color columnColor = Color.valueOf("6D435A");
+    public static Color enemyColor = Color.valueOf("FFFCF9");
+    public static Color boundingBoxColor = Color.valueOf("FF7684");
+    public static Color fontColor = Color.WHITE;
 }

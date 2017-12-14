@@ -13,8 +13,8 @@ public class MovingEntity extends BaseGameEntity {
     //a vector perpendicular to the heading vector
     Vector2D side;
 
-    float mass;
-    float maxSpeed;
+    double mass;
+    double maxSpeed;
     double maxForce;
 
     MovingEntity() {

@@ -2,7 +2,6 @@ package com.pastew.plague;
 //
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class Player extends MovingEntity {
@@ -11,7 +10,7 @@ public class Player extends MovingEntity {
 
     // Moving
     private Vector2D forceDirection;
-    private float moveForce;
+    private double moveForce;
     private Vector2D previousPosition;
 
     // Shooting

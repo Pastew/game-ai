@@ -141,17 +141,23 @@ class GameWorld {
                 GameColors.bgColor.a);
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
+
+        // Render agents and player
         for (BaseGameEntity entity : entities) {
             entity.render();
         }
-        //columns
+
+        // Render columns
         for (Column column : columns) {
             column.render();
         }
 
-        //Parameters.render(batch, Gdx.graphics.getDeltaTime());
+        // Render info about parameters
+        batch.begin();
+        Parameters.getInstance().render(batch);
         batch.end();
+
+
     }
 
     private void handlePlayerInput() {
