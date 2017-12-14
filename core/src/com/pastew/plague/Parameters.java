@@ -12,7 +12,7 @@ class Parameters {
     private static Parameters instance = null;
     private static BitmapFont font;
 
-    private Parameters(){
+    private Parameters() {
         font = new BitmapFont();
         font.setColor(GameColors.fontColor);
 
@@ -39,8 +39,8 @@ class Parameters {
         parameterToRendersArray.add(new ParameterToRender(WANDER_MULTIPLIER, "wander avoidance multiplier"));
     }
 
-    public static Parameters getInstance(){
-        if(instance == null)
+    public static Parameters getInstance() {
+        if (instance == null)
             instance = new Parameters();
 
         return instance;
@@ -76,24 +76,38 @@ class Parameters {
     // Render
     static int H;
     static ArrayList<ParameterToRender> parameterToRendersArray;
+    static int currentSelect = 0;
 
-    public void render(Batch batch)
-    {
+    public void render(Batch batch) {
         //batch.setProjectionMatrix(camera.combined); //or your matrix to draw GAME WORLD, not UI
         for (int i = 0; i < parameterToRendersArray.size(); i++) {
             ParameterToRender parameterToRender = parameterToRendersArray.get(i);
             int margin = 5;
-            font.draw(batch, String.format("%s: %s",
+            String strToFormat = "   %s: %s";
+            if(currentSelect == i )
+                strToFormat = "-> %s: %s";
+
+            font.draw(batch, String.format(strToFormat,
                     parameterToRender.label, parameterToRender.valueReference),
-                    10, H - 10  * i - margin * i);
+                    10, H - 10 * i - margin * i);
         }
+    }
+
+    public static void selectNext() {
+        if(currentSelect+1 < parameterToRendersArray.size())
+            currentSelect++;
+    }
+
+    public static void selectPrevious() {
+        if(currentSelect-1 >=0)
+            currentSelect--;
     }
 
     private class ParameterToRender {
         Number valueReference;
         String label;
 
-        public ParameterToRender(Number valueRef, String label){
+        public ParameterToRender(Number valueRef, String label) {
             this.valueReference = valueRef;
             this.label = label;
         }

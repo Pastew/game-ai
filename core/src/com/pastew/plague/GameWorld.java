@@ -187,6 +187,13 @@ class GameWorld {
         } else {
             player.triggerReleased();
         }
+
+        // Parameters modification
+        if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+            Parameters.selectNext();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            Parameters.selectPrevious();
+        }
     }
 
     void dispose() {
