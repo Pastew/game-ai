@@ -41,8 +41,9 @@ public class Agent extends MovingEntity {
             //show line for collision avoidance
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.CYAN);
-            double minBoxSize = steeringBehaviors.boxLength;
-            Vector2D linePosition = Vector2D.add(position, Vector2D.mul(heading, minBoxSize + (velocity.Length() / maxSpeed.getValue()) * minBoxSize * 2));
+            MutableDouble boxLength = steeringBehaviors.boxLength;
+            Vector2D linePosition = Vector2D.add(position, Vector2D.mul(heading,
+                    boxLength.getValue() + (velocity.Length() / maxSpeed.getValue()) * boxLength.getValue() * 2));
             shapeRenderer.line((float) position.x, (float) position.y, (float) linePosition.x, (float) linePosition.y);
 
             shapeRenderer.end();

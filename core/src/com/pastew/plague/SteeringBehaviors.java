@@ -36,7 +36,7 @@ public class SteeringBehaviors {
             wanderRadius.getValue() * Math.sin(theta));
 
     //obstacleAvoidance
-    double minDetectionBoxLength = Parameters.OBSTACLE_AVOIDANCE_MIN_DETECTION_BOX_LENGTH.getValue();
+    MutableDouble minDetectionBoxLength = Parameters.OBSTACLE_AVOIDANCE_MIN_DETECTION_BOX_LENGTH;
     private boolean obstacleAvoidance = false;
     private BaseGameEntity hideTarget; // Przed kim ma sie chowac
 
@@ -44,7 +44,7 @@ public class SteeringBehaviors {
     private List<Vector2D> m_Feelers = new ArrayList<Vector2D>();
     private double m_dWallDetectionFeelerLength = 40.0;
     private boolean wallAvoidance;
-    public double boxLength = 0;
+    public MutableDouble boxLength = new MutableDouble(0);
 
     SteeringBehaviors(Agent agent, GameWorld gameworld) {
         this.agent = agent;
@@ -239,7 +239,7 @@ public class SteeringBehaviors {
     // ==================obstacleAvoidance=======================
     public Vector2D obstacleAvoidance() {
         //the detection box length is proportional to the agent's velocity
-        boxLength = minDetectionBoxLength + (agent.velocity.Length() / agent.maxSpeed.getValue()) * minDetectionBoxLength;
+        boxLength.setValue(minDetectionBoxLength.getValue() + (agent.velocity.Length() / agent.maxSpeed.getValue()) * minDetectionBoxLength.getValue());
 
         //tag all obstacles within range of the box for processing
 //m_pVehicle->World()->TagObstaclesWithinViewRange(m_pVehicle, m_dDBoxLength);
@@ -257,7 +257,7 @@ public class SteeringBehaviors {
         for (BaseGameEntity obstacle : obstaclesList) {
 
 //if the obstacle has been tagged within range proceed
-            if (obstacle.position.Distance(agent.position) - obstacle.size / 2 - agent.size / 2 < boxLength && obstacle != agent) {
+            if (obstacle.position.Distance(agent.position) - obstacle.size / 2 - agent.size / 2 < boxLength.getValue() && obstacle != agent) {
 //calculate this obstacle's position in local space
                 Vector2D LocalPos = Transformation.PointToLocalSpace(obstacle.position,
                         agent.heading,
@@ -309,7 +309,7 @@ public class SteeringBehaviors {
 //the closer the agent is to an object, the stronger the steering force
 
             //should be
-            double multiplier = 1.0 + (boxLength - LocalPosOfClosestObstacle.x) / boxLength;
+            double multiplier = 1.0 + (boxLength.getValue() - LocalPosOfClosestObstacle.x) / boxLength.getValue();
 
 //calculate the lateral force
             SteeringForce.y = (ClosestIntersectingObstacle.size / 2 - LocalPosOfClosestObstacle.y) * multiplier;
