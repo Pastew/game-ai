@@ -39,7 +39,7 @@ class Parameters {
     static MutableDouble WANDER_MULTIPLIER = new MutableDouble(10.);
 
     // Debug draw
-    static final boolean DRAW_DEBUG = true;
+    static boolean DRAW_DEBUG = true;
 
     private Parameters() {
         font = new BitmapFont();
@@ -114,6 +114,10 @@ class Parameters {
 
     public static void decreaseCurrentParameter() {
         parameterToRendersArray.get(currentSelect).decrease();
+    }
+
+    public static void drawDebugSwitch() {
+        DRAW_DEBUG = !DRAW_DEBUG;
     }
 
     private class Parameter {

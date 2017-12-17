@@ -200,6 +200,11 @@ class GameWorld {
         } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             Parameters.decreaseCurrentParameter();
         }
+
+        // Draw / don't draw debug things
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            Parameters.drawDebugSwitch();
+        }
     }
 
     void dispose() {
