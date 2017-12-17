@@ -387,4 +387,8 @@ public class Vector2D {
         Vector2D toTarget = Vec2DNormalize(sub(posSecond, posFirst));
         return facingFirst.Dot(toTarget) >= Math.cos(fov / 2.0);
     }
+
+    public Vector2D getCopy() {
+        return new Vector2D(x,y);
+    }
 }

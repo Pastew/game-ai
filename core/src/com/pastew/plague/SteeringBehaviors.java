@@ -34,6 +34,7 @@ public class SteeringBehaviors {
     double theta = RandFloat() * TwoPi;
     private Vector2D wanderTarget = new Vector2D(wanderRadius.getValue() * Math.cos(theta),
             wanderRadius.getValue() * Math.sin(theta));
+    public Vector2D wanderTargetWorld = new Vector2D();
 
     //obstacleAvoidance
     MutableDouble minDetectionBoxLength = Parameters.OBSTACLE_AVOIDANCE_MIN_DETECTION_BOX_LENGTH;
@@ -220,12 +221,13 @@ public class SteeringBehaviors {
         Vector2D targetLocal = Vector2DOperations.add(wanderTarget, new Vector2D(wanderDistance.getValue(), 0));
 
         //project the target into world space
-        Vector2D targetWorld = PointToWorldSpace(targetLocal,
+        wanderTargetWorld = PointToWorldSpace(
+                targetLocal,
                 agent.heading,
                 agent.side,
                 agent.position);
 
-        return Vector2DOperations.sub(targetWorld, agent.position);
+        return Vector2DOperations.sub(wanderTargetWorld, agent.position);
     }
 
     public void turnOnWander() {

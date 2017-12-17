@@ -8,9 +8,9 @@ public class Agent extends MovingEntity {
     private GameWorld gameWorld;
 
     private SteeringBehaviors steeringBehaviors;
-    
+
 //AGENT JEST BOTEM
-    
+
     Agent(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
         maxSpeed = Parameters.BOT_MAX_SPEED;
@@ -21,7 +21,7 @@ public class Agent extends MovingEntity {
 
         steeringBehaviors = new SteeringBehaviors(this, gameWorld);
 
-        
+
         //steeringBehaviors.turnOnFlee(gameWorld.getPlayerVector2D());
         //steeringBehaviors.turnOnSeek(gameWorld.getPlayerVector2D());
         //steeringBehaviors.turnOnSeek(gameWorld.getColumn(0).position);
@@ -31,14 +31,14 @@ public class Agent extends MovingEntity {
         steeringBehaviors.turnOnWallAvoidance();
         steeringBehaviors.turnOnHide(gameWorld.getPlayerBaseEntity());
     }
-    
-        //colision line 
+
+    //colision line
 
     public void render() {
         super.render();
 
-        if(Parameters.DRAW_BOT_BOUNDING_BOX) {
-            //show line for collision avoidance
+        if (Parameters.DRAW_DEBUG) {
+            // === Obstacle avoidance ===
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.CYAN);
             MutableDouble boxLength = steeringBehaviors.boxLength;
@@ -47,12 +47,28 @@ public class Agent extends MovingEntity {
             shapeRenderer.line((float) position.x, (float) position.y, (float) linePosition.x, (float) linePosition.y);
 
             shapeRenderer.end();
+
+            // === Wander ===
+            // Wander circle
+            shapeRenderer.setColor(Color.YELLOW);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            Vector2D wanderCircleCenter = heading.getCopy();
+            wanderCircleCenter.mul(steeringBehaviors.wanderDistance.getValue());
+            wanderCircleCenter.add(position);
+            shapeRenderer.circle((int) wanderCircleCenter.x, (int) wanderCircleCenter.y, (int) steeringBehaviors.wanderRadius.getValue());
+            shapeRenderer.end();
+
+            // Wander target spot
+            shapeRenderer.setColor(Color.YELLOW);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.circle(
+                    (int) steeringBehaviors.wanderTargetWorld.x,
+                    (int) steeringBehaviors.wanderTargetWorld.y,
+                    5);
+            shapeRenderer.end();
         }
     }
-    
-    public GameWorld getWorld(){
-        return gameWorld;
-    }
+
 
     public void update(double deltaTime) {
         //calculate the combined force from each steering behavior in the
@@ -67,8 +83,7 @@ public class Agent extends MovingEntity {
         position.add(velocity);
 
         super.update(deltaTime);
-        
-        
-        
+
+
     }
 }

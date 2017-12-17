@@ -25,9 +25,9 @@ class Parameters {
 
     static MutableDouble OBSTACLE_AVOIDANCE_MIN_DETECTION_BOX_LENGTH = new MutableDouble(40.);
 
-    static MutableDouble WANDER_RADIUS = new MutableDouble(1.2);
-    static MutableDouble WANDER_DISTANCE = new MutableDouble(1.);
-    static MutableDouble WANDER_JITTER = new MutableDouble(80.);
+    static MutableDouble WANDER_RADIUS = new MutableDouble(30.);
+    static MutableDouble WANDER_DISTANCE = new MutableDouble(80.);
+    static MutableDouble WANDER_JITTER = new MutableDouble(10.);
 
     // Bots steering behaviours multipliers
     static MutableDouble WALL_AVOIDANCE_MULTIPLIER = new MutableDouble(2.);
@@ -37,7 +37,7 @@ class Parameters {
     static MutableDouble WANDER_MULTIPLIER = new MutableDouble(10.);
 
     // Debug draw
-    static final boolean DRAW_BOT_BOUNDING_BOX = true;
+    static final boolean DRAW_DEBUG = true;
 
     private Parameters() {
         font = new BitmapFont();
@@ -55,15 +55,15 @@ class Parameters {
 
         parameterToRendersArray.add(new Parameter(OBSTACLE_AVOIDANCE_MIN_DETECTION_BOX_LENGTH, "obstacle min box length"));
 
-        parameterToRendersArray.add(new Parameter(WANDER_RADIUS, "wander radius"));
-        parameterToRendersArray.add(new Parameter(WANDER_JITTER, "wander jitter"));
-        parameterToRendersArray.add(new Parameter(WANDER_DISTANCE, "wander distance"));
+        parameterToRendersArray.add(new Parameter(WANDER_RADIUS, "wander radius", 1));
+        parameterToRendersArray.add(new Parameter(WANDER_JITTER, "wander jitter", 1));
+        parameterToRendersArray.add(new Parameter(WANDER_DISTANCE, "wander distance", 1));
 
         parameterToRendersArray.add(new Parameter(WALL_AVOIDANCE_MULTIPLIER, "wall avoidance multiplier"));
         parameterToRendersArray.add(new Parameter(OBSTACLE_AVOIDANCE_MULTIPLIER, "obstacle avoidance multiplier"));
-        parameterToRendersArray.add(new Parameter(HIDE_MULTIPLIER, "hide avoidance multiplier"));
-        parameterToRendersArray.add(new Parameter(SEEK_AVOIDANCE_MULTIPLIER, "seek avoidance multiplier"));
-        parameterToRendersArray.add(new Parameter(WANDER_MULTIPLIER, "wander avoidance multiplier"));
+        parameterToRendersArray.add(new Parameter(HIDE_MULTIPLIER, "hide multiplier"));
+        parameterToRendersArray.add(new Parameter(SEEK_AVOIDANCE_MULTIPLIER, "seek multiplier"));
+        parameterToRendersArray.add(new Parameter(WANDER_MULTIPLIER, "wander multiplier"));
     }
 
     public static Parameters getInstance() {
