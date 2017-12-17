@@ -30,6 +30,7 @@ public class Agent extends MovingEntity {
         steeringBehaviors.turnOnObstacleAvoidance();
         steeringBehaviors.turnOnWallAvoidance();
         steeringBehaviors.turnOnHide(gameWorld.getPlayerBaseEntity());
+        steeringBehaviors.turnOnSeparation();
     }
 
     //colision line
@@ -83,6 +84,7 @@ public class Agent extends MovingEntity {
     public void update(double deltaTime) {
         //calculate the combined force from each steering behavior in the
         //agent’s list
+        tagNeighbors(this, gameWorld.getEnemies(), Parameters.SEPARATION_RADIUS.getValue());
         Vector2D steeringForce = steeringBehaviors.calculate();
 
         //Acceleration = Force/Mass

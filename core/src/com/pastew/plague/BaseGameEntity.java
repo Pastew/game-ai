@@ -32,7 +32,7 @@ public class BaseGameEntity {
         shapeRenderer.end();
     }
 
-    void tagNeighbors(BaseGameEntity entity, List<BaseGameEntity> entities, double radius){
+    public void tagNeighbors(BaseGameEntity entity, List<BaseGameEntity> entities, double radius){
         for(BaseGameEntity currentEntity : entities){
             currentEntity.unTag();
 
@@ -50,5 +50,9 @@ public class BaseGameEntity {
 
     private void unTag() {
         tag = false;
+    }
+
+    public boolean isTagged() {
+        return tag;
     }
 }

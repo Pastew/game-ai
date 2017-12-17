@@ -4,8 +4,6 @@ package com.pastew.plague;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 class Parameters {
@@ -23,6 +21,7 @@ class Parameters {
     static MutableDouble BOT_MAX_SPEED = new MutableDouble(30.);
     static MutableDouble BOT_MAX_FORCE = new MutableDouble(10.);
 
+
     static MutableDouble ARRIVE_DISTANCE_WHEN_STOP = new MutableDouble(50);
 
     static MutableDouble OBSTACLE_AVOIDANCE_MIN_DETECTION_BOX_LENGTH = new MutableDouble(40.);
@@ -31,12 +30,15 @@ class Parameters {
     static MutableDouble WANDER_DISTANCE = new MutableDouble(80.);
     static MutableDouble WANDER_JITTER = new MutableDouble(10.);
 
+    static MutableDouble SEPARATION_RADIUS = new MutableDouble(30.);
+
     // Bots steering behaviours multipliers
     static MutableDouble WALL_AVOIDANCE_MULTIPLIER = new MutableDouble(2.);
     static MutableDouble OBSTACLE_AVOIDANCE_MULTIPLIER = new MutableDouble(2.);
     static MutableDouble HIDE_MULTIPLIER = new MutableDouble(0.11);
     static MutableDouble SEEK_AVOIDANCE_MULTIPLIER = new MutableDouble(1.);
     static MutableDouble WANDER_MULTIPLIER = new MutableDouble(10.);
+    static MutableDouble SEPARATION_MULTIPLIER = new MutableDouble(1);
 
     // Debug draw
     static boolean DRAW_DEBUG = true;
@@ -63,11 +65,14 @@ class Parameters {
         parameterToRendersArray.add(new Parameter(WANDER_JITTER, "wander jitter"));
         parameterToRendersArray.add(new Parameter(WANDER_DISTANCE, "wander distance"));
 
+        parameterToRendersArray.add(new Parameter(SEPARATION_RADIUS, "separation radius"));
+
         parameterToRendersArray.add(new Parameter(WALL_AVOIDANCE_MULTIPLIER, "wall avoidance multiplier",0.1));
         parameterToRendersArray.add(new Parameter(OBSTACLE_AVOIDANCE_MULTIPLIER, "obstacle avoidance multiplier",0.1));
         parameterToRendersArray.add(new Parameter(HIDE_MULTIPLIER, "hide multiplier", 0.1));
         parameterToRendersArray.add(new Parameter(SEEK_AVOIDANCE_MULTIPLIER, "seek multiplier", 0.1));
         parameterToRendersArray.add(new Parameter(WANDER_MULTIPLIER, "wander multiplier", 0.1));
+        parameterToRendersArray.add(new Parameter(SEPARATION_MULTIPLIER, "separation multiplier", 0.1));
     }
 
     public static Parameters getInstance() {

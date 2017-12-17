@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.compression.lzma.Base;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +16,14 @@ class GameWorld {
     private SpriteBatch batch;
     private Player player;
     private List<BaseGameEntity> entities;
-    private List<Agent> enemies;
+    private List<BaseGameEntity> enemies;
     private List<Column> columns;
     private List<Wall> walls;
     private List<BaseGameEntity> entitiesToDestroy;
 
     GameWorld() {
         entities = new ArrayList<BaseGameEntity>();
-        enemies = new ArrayList<Agent>();
+        enemies = new ArrayList<BaseGameEntity>();
         entitiesToDestroy = new ArrayList<BaseGameEntity>();
 
         player = new Player(this, 400, 400);
@@ -242,7 +243,7 @@ class GameWorld {
         return walls;
     }
 
-    public List<Agent> getEnemies() {
+    public List<BaseGameEntity> getEnemies() {
         return enemies;
     }
 

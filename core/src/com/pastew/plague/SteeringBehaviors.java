@@ -46,6 +46,7 @@ public class SteeringBehaviors {
     private double m_dWallDetectionFeelerLength = 40.0;
     private boolean wallAvoidance;
     public MutableDouble boxLength = new MutableDouble(0);
+    private boolean separation;
 
     SteeringBehaviors(Agent agent, GameWorld gameworld) {
         this.agent = agent;
@@ -63,6 +64,15 @@ public class SteeringBehaviors {
             force.mul(Parameters.WALL_AVOIDANCE_MULTIPLIER.getValue());
             if (!AccumulateForce(steeringForce, force)){
 //                System.out.println("Ending with wall avoidance");
+                return steeringForce;
+            }
+        }
+
+        if (separation) {
+            force = Separation(gameworld.getEnemies());
+            force.mul(Parameters.SEPARATION_MULTIPLIER.getValue());
+            if (!AccumulateForce(steeringForce, force)){
+//                System.out.println("Ending with separation");
                 return steeringForce;
             }
         }
@@ -454,5 +464,26 @@ public class SteeringBehaviors {
         this.hideTarget = null;
     }
 
+
+
+    // ================== Separation ==============================
+    Vector2D Separation(List<BaseGameEntity> neighbors){
+        Vector2D steeringForce = new Vector2D();
+
+        for(int a = 0; a < neighbors.size() ; ++a){
+            if(neighbors.get(a) != this.agent && neighbors.get(a).isTagged()){
+                Vector2D toAgent = Vector2DOperations.sub(agent.position, neighbors.get(a).position);
+                steeringForce.add(Vec2DNormalize(toAgent).div(toAgent.Length()));
+            }
+        }
+
+        return steeringForce;
+    }
+
+    void turnOnSeparation() { this.separation = true; }
+
+    void turnOffSeparaion() {
+        this.separation = false;
+    }
 
 }
