@@ -125,7 +125,6 @@ public class Player extends MovingEntity {
     }
 
     public void update(double deltaTime) {
-        System.out.println(moveForce.getValue());
         Vector2D force = forceDirection.mul(moveForce.getValue());
         //Acceleration = Force/Mass
         Vector2D acceleration = force.div(mass);

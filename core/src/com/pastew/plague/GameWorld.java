@@ -225,11 +225,11 @@ class GameWorld {
     public List<BaseGameEntity> getObstacles() {
         List<BaseGameEntity> obstaclesList = new ArrayList<BaseGameEntity>();
         obstaclesList.addAll(columns);
-        for (BaseGameEntity entity : entities) {
-            if (entity != player) {
-                obstaclesList.add(entity);
-            }
-        }
+//        for (BaseGameEntity entity : entities) {
+//            if (entity != player) {
+//                obstaclesList.add(entity);
+//            }
+//        }
         return obstaclesList;
     }
 

@@ -55,15 +55,15 @@ class Parameters {
 
         parameterToRendersArray.add(new Parameter(OBSTACLE_AVOIDANCE_MIN_DETECTION_BOX_LENGTH, "obstacle min box length"));
 
-        parameterToRendersArray.add(new Parameter(WANDER_RADIUS, "wander radius", 1));
-        parameterToRendersArray.add(new Parameter(WANDER_JITTER, "wander jitter", 1));
-        parameterToRendersArray.add(new Parameter(WANDER_DISTANCE, "wander distance", 1));
+        parameterToRendersArray.add(new Parameter(WANDER_RADIUS, "wander radius"));
+        parameterToRendersArray.add(new Parameter(WANDER_JITTER, "wander jitter"));
+        parameterToRendersArray.add(new Parameter(WANDER_DISTANCE, "wander distance"));
 
-        parameterToRendersArray.add(new Parameter(WALL_AVOIDANCE_MULTIPLIER, "wall avoidance multiplier"));
-        parameterToRendersArray.add(new Parameter(OBSTACLE_AVOIDANCE_MULTIPLIER, "obstacle avoidance multiplier"));
-        parameterToRendersArray.add(new Parameter(HIDE_MULTIPLIER, "hide multiplier"));
-        parameterToRendersArray.add(new Parameter(SEEK_AVOIDANCE_MULTIPLIER, "seek multiplier"));
-        parameterToRendersArray.add(new Parameter(WANDER_MULTIPLIER, "wander multiplier"));
+        parameterToRendersArray.add(new Parameter(WALL_AVOIDANCE_MULTIPLIER, "wall avoidance multiplier",0.1));
+        parameterToRendersArray.add(new Parameter(OBSTACLE_AVOIDANCE_MULTIPLIER, "obstacle avoidance multiplier",0.1));
+        parameterToRendersArray.add(new Parameter(HIDE_MULTIPLIER, "hide multiplier", 0.1));
+        parameterToRendersArray.add(new Parameter(SEEK_AVOIDANCE_MULTIPLIER, "seek multiplier", 0.1));
+        parameterToRendersArray.add(new Parameter(WANDER_MULTIPLIER, "wander multiplier", 0.1));
     }
 
     public static Parameters getInstance() {
@@ -118,7 +118,7 @@ class Parameters {
         double valueDiff;
 
         public Parameter(MutableDouble val, String label) {
-            this(val, label, 0.1);
+            this(val, label, 1);
         }
 
         public Parameter(MutableDouble valueRef, String label, double valueDiff) {
@@ -129,6 +129,8 @@ class Parameters {
 
         public void decrease() {
             valueReference.subtract(valueDiff);
+            if(valueReference.getValue() <=0)
+                valueReference.setValue(0);
         }
 
         public void increase() {
