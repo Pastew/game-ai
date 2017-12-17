@@ -23,6 +23,8 @@ class Parameters {
     static MutableDouble BOT_MAX_SPEED = new MutableDouble(30.);
     static MutableDouble BOT_MAX_FORCE = new MutableDouble(10.);
 
+    static MutableDouble ARRIVE_DISTANCE_WHEN_STOP = new MutableDouble(50);
+
     static MutableDouble OBSTACLE_AVOIDANCE_MIN_DETECTION_BOX_LENGTH = new MutableDouble(40.);
 
     static MutableDouble WANDER_RADIUS = new MutableDouble(30.);
@@ -51,7 +53,9 @@ class Parameters {
 
         //parameterToRendersArray.add(new Parameter(BOTS_NUMBER, "bots number"));
         parameterToRendersArray.add(new Parameter(BOT_MAX_SPEED, "bot max speed"));
+
         parameterToRendersArray.add(new Parameter(BOT_MAX_FORCE, "bot move force"));
+        parameterToRendersArray.add(new Parameter(ARRIVE_DISTANCE_WHEN_STOP, "arrive - distance when stop"));
 
         parameterToRendersArray.add(new Parameter(OBSTACLE_AVOIDANCE_MIN_DETECTION_BOX_LENGTH, "obstacle min box length"));
 

@@ -2,7 +2,10 @@ package com.pastew.plague;
 //
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
+import static com.pastew.plague.SteeringBehaviors.getHidingPosition;
 
 public class Player extends MovingEntity {
 
@@ -96,6 +99,19 @@ public class Player extends MovingEntity {
             shapeRenderer.end();
 
             remainingBeamDrawingTime -= Gdx.graphics.getDeltaTime();
+        }
+        // End of beam drawing
+
+        // Debug draw
+        if(Parameters.DRAW_DEBUG) {
+            // Draw hiding spots
+            for (BaseGameEntity column : gameWorld.getColumns()) {
+                Vector2D hidingSpot = getHidingPosition(column.position, column.size, this.position);
+                shapeRenderer.setColor(Color.GRAY);
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                shapeRenderer.circle((float) hidingSpot.x, (float) hidingSpot.y, 3);
+                shapeRenderer.end();
+            }
         }
     }
 

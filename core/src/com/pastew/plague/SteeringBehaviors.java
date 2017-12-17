@@ -173,7 +173,7 @@ public class SteeringBehaviors {
 
         //calculate the distance to the target position
         double dist = toTarget.Length();
-        final double DISTANCE_WHEN_STOP = 100;
+        final double DISTANCE_WHEN_STOP = Parameters.ARRIVE_DISTANCE_WHEN_STOP.getValue();
 
         if (dist > DISTANCE_WHEN_STOP) {
             //because Deceleration is enumerated as an int, this value is required
