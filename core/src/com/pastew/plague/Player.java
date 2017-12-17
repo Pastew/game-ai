@@ -10,7 +10,7 @@ public class Player extends MovingEntity {
 
     // Moving
     private Vector2D forceDirection;
-    private double moveForce;
+    private MutableDouble moveForce;
     private Vector2D previousPosition;
 
     // Shooting
@@ -125,12 +125,13 @@ public class Player extends MovingEntity {
     }
 
     public void update(double deltaTime) {
-        Vector2D force = forceDirection.mul(moveForce);
+        System.out.println(moveForce.getValue());
+        Vector2D force = forceDirection.mul(moveForce.getValue());
         //Acceleration = Force/Mass
         Vector2D acceleration = force.div(mass);
         velocity.add(acceleration.mul(deltaTime));
 
-        velocity.Truncate(maxSpeed);
+        velocity.Truncate(maxSpeed.getValue());
         //  position.add(velocity);
 
         //remembering previous position of player

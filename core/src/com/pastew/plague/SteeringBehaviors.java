@@ -28,15 +28,15 @@ public class SteeringBehaviors {
 
     //wander
     private boolean wandering = false;
-    double wanderRadius = Parameters.WANDER_RADIUS; // radius of the constraining circle
-    double wanderDistance = Parameters.WANDER_DISTANCE; // distance the wander circle is projected in front of the agent
-    double wanderJitter = Parameters.WANDER_JITTER; // maximum amount of random displacement that can be added to the target each second.
+    MutableDouble wanderRadius = Parameters.WANDER_RADIUS; // radius of the constraining circle
+    MutableDouble wanderDistance = Parameters.WANDER_DISTANCE; // distance the wander circle is projected in front of the agent
+    MutableDouble wanderJitter = Parameters.WANDER_JITTER; // maximum amount of random displacement that can be added to the target each second.
     double theta = RandFloat() * TwoPi;
-    private Vector2D wanderTarget = new Vector2D(wanderRadius * Math.cos(theta),
-            wanderRadius * Math.sin(theta));
+    private Vector2D wanderTarget = new Vector2D(wanderRadius.getValue() * Math.cos(theta),
+            wanderRadius.getValue() * Math.sin(theta));
 
     //obstacleAvoidance
-    double minDetectionBoxLength = Parameters.OBSTACLE_AVOIDANCE_MIN_DETECTION_BOX_LENGTH;
+    double minDetectionBoxLength = Parameters.OBSTACLE_AVOIDANCE_MIN_DETECTION_BOX_LENGTH.getValue();
     private boolean obstacleAvoidance = false;
     private BaseGameEntity hideTarget; // Przed kim ma sie chowac
 
@@ -59,18 +59,18 @@ public class SteeringBehaviors {
 
         if (wallAvoidance) {
             force = WallAvoidance();
-            force.mul(Parameters.WALL_AVOIDANCE_MULTIPLIER);
+            force.mul(Parameters.WALL_AVOIDANCE_MULTIPLIER.getValue());
             if (!AccumulateForce(steeringForce, force)){
-                System.out.println("Ending with wall avoidance");
+//                System.out.println("Ending with wall avoidance");
                 return steeringForce;
             }
         }
 
         if (obstacleAvoidance) {
             force = obstacleAvoidance();
-            force.mul(Parameters.OBSTACLE_AVOIDANCE_MULTIPLIER);
+            force.mul(Parameters.OBSTACLE_AVOIDANCE_MULTIPLIER.getValue());
             if (!AccumulateForce(steeringForce, force)) {
-                System.out.println("Ending with obstacle avoidance");
+//                System.out.println("Ending with obstacle avoidance");
                 return steeringForce;
             }
 
@@ -78,27 +78,27 @@ public class SteeringBehaviors {
 
         if (hideTarget != null) {
             force = hide(hideTarget, gameworld.getColumns());
-            force.mul(Parameters.HIDE_MULTIPLIER);
+            force.mul(Parameters.HIDE_MULTIPLIER.getValue());
             if (!AccumulateForce(steeringForce, force)) {
-                System.out.println("Ending with hide ");
+//                System.out.println("Ending with hide ");
                 return steeringForce;
             }
         }
 
         if (seekTarget != null) {
             force = seek(seekTarget);
-            force.mul(Parameters.SEEK_AVOIDANCE_MULTIPLIER);
+            force.mul(Parameters.SEEK_AVOIDANCE_MULTIPLIER.getValue());
             if (!AccumulateForce(steeringForce, force)){
-                System.out.println("Ending with seek ");
+//                System.out.println("Ending with seek ");
                 return steeringForce;
             }
         }
 
         if (wandering) {
             force = wander();
-            force.mul(Parameters.WANDER_MULTIPLIER);
+            force.mul(Parameters.WANDER_MULTIPLIER.getValue());
             if (!AccumulateForce(steeringForce, force)){
-                System.out.println("Ending with wander ");
+//                System.out.println("Ending with wander ");
                 return steeringForce;
             }
         }
@@ -116,7 +116,7 @@ public class SteeringBehaviors {
 
     private boolean AccumulateForce(Vector2D steeringForce, Vector2D forceToAdd) {
         double magnitudeSoFar = steeringForce.Length();
-        double magnitudeRemaining = agent.maxForce - magnitudeSoFar;
+        double magnitudeRemaining = agent.maxForce.getValue() - magnitudeSoFar;
         if (magnitudeRemaining <= 0.0) return false;
         double magnitudeToAdd = forceToAdd.Length();
         if (magnitudeToAdd < magnitudeRemaining) {
@@ -131,7 +131,7 @@ public class SteeringBehaviors {
     // ======== seek ========
     private Vector2D seek(Vector2D targetPosition) {
         Vector2D targetPositionCopy = new Vector2D(targetPosition);
-        Vector2D desiredVelocity = Vec2DNormalize(targetPositionCopy.sub(agent.position)).mul(agent.maxSpeed);
+        Vector2D desiredVelocity = Vec2DNormalize(targetPositionCopy.sub(agent.position)).mul(agent.maxSpeed.getValue());
 
         return (desiredVelocity.sub(agent.velocity));
     }
@@ -153,7 +153,7 @@ public class SteeringBehaviors {
         }
 
         Vector2D agentPositionCopy = new Vector2D(agent.position);
-        Vector2D desiredVelocity = Vec2DNormalize(agentPositionCopy.sub(targetPosition)).mul(agent.maxSpeed);
+        Vector2D desiredVelocity = Vec2DNormalize(agentPositionCopy.sub(targetPosition)).mul(agent.maxSpeed.getValue());
 
         return (desiredVelocity.sub(agent.velocity));
     }
@@ -184,7 +184,7 @@ public class SteeringBehaviors {
             double speed = dist / ((double) deceleration.getValue() * DecelerationTweaker);
 
             //make sure the velocity does not exceed the max
-            speed = min(speed, agent.maxSpeed);
+            speed = min(speed, agent.maxSpeed.getValue());
 
             //from here proceed just like Seek except we don't need to normalize
             //the ToTarget vector because we have already gone to the trouble
@@ -209,15 +209,15 @@ public class SteeringBehaviors {
         // first, add a small random vector to the target’s position
         // (RandomClamped returns a value between -1 and 1)
         wanderTarget.add(new Vector2D(
-                RandomClamped() * wanderJitter,
-                RandomClamped() * wanderJitter));
+                RandomClamped() * wanderJitter.getValue(),
+                RandomClamped() * wanderJitter.getValue()));
 
         // reproject this new vector back onto a unit circle
         wanderTarget.Normalize();
-        wanderTarget.mul(wanderRadius);
+        wanderTarget.mul(wanderRadius.getValue());
 
         //move the target into a position WanderDist in front of the agent
-        Vector2D targetLocal = Vector2DOperations.add(wanderTarget, new Vector2D(wanderDistance, 0));
+        Vector2D targetLocal = Vector2DOperations.add(wanderTarget, new Vector2D(wanderDistance.getValue(), 0));
 
         //project the target into world space
         Vector2D targetWorld = PointToWorldSpace(targetLocal,
@@ -239,7 +239,7 @@ public class SteeringBehaviors {
     // ==================obstacleAvoidance=======================
     public Vector2D obstacleAvoidance() {
         //the detection box length is proportional to the agent's velocity
-        boxLength = minDetectionBoxLength + (agent.velocity.Length() / agent.maxSpeed) * minDetectionBoxLength;
+        boxLength = minDetectionBoxLength + (agent.velocity.Length() / agent.maxSpeed.getValue()) * minDetectionBoxLength;
 
         //tag all obstacles within range of the box for processing
 //m_pVehicle->World()->TagObstaclesWithinViewRange(m_pVehicle, m_dDBoxLength);

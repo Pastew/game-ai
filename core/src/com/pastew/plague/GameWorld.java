@@ -194,6 +194,12 @@ class GameWorld {
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             Parameters.selectPrevious();
         }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            Parameters.increaseCurrentParameter();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            Parameters.decreaseCurrentParameter();
+        }
     }
 
     void dispose() {

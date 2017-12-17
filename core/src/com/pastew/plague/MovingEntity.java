@@ -14,8 +14,8 @@ public class MovingEntity extends BaseGameEntity {
     Vector2D side;
 
     double mass;
-    double maxSpeed;
-    double maxForce;
+    MutableDouble maxSpeed;
+    MutableDouble maxForce;
 
     MovingEntity() {
         super();
@@ -23,7 +23,7 @@ public class MovingEntity extends BaseGameEntity {
         heading = new Vector2D(1, 0);
         side = heading.perp();
         mass = 1;
-        maxSpeed = 100;
+        maxSpeed = Parameters.BOT_MAX_SPEED;
         frictionCoeffictient = 0.95f;
     }
 

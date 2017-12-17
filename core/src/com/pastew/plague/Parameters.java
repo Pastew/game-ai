@@ -12,31 +12,57 @@ class Parameters {
     private static Parameters instance = null;
     private static BitmapFont font;
 
+    // Player
+    static MutableDouble PLAYER_MOVE_FORCE = new MutableDouble(10.0);
+    static MutableDouble PLAYER_MAX_SPEED = new MutableDouble(5.);
+
+    // Bots
+    static int BOTS_NUMBER = 10;
+
+    static MutableDouble BOT_MAX_SPEED = new MutableDouble(30.);
+    static MutableDouble BOT_MAX_FORCE = new MutableDouble(10.);
+
+    static MutableDouble OBSTACLE_AVOIDANCE_MIN_DETECTION_BOX_LENGTH = new MutableDouble(40.);
+
+    static MutableDouble WANDER_RADIUS = new MutableDouble(1.2);
+    static MutableDouble WANDER_DISTANCE = new MutableDouble(1.);
+    static MutableDouble WANDER_JITTER = new MutableDouble(80.);
+
+    // Bots steering behaviours multipliers
+    static MutableDouble WALL_AVOIDANCE_MULTIPLIER = new MutableDouble(2.);
+    static MutableDouble OBSTACLE_AVOIDANCE_MULTIPLIER = new MutableDouble(2.);
+    static MutableDouble HIDE_MULTIPLIER = new MutableDouble(0.11);
+    static MutableDouble SEEK_AVOIDANCE_MULTIPLIER = new MutableDouble(1.);
+    static MutableDouble WANDER_MULTIPLIER = new MutableDouble(10.);
+
+    // Debug draw
+    static final boolean DRAW_BOT_BOUNDING_BOX = true;
+
     private Parameters() {
         font = new BitmapFont();
         font.setColor(GameColors.fontColor);
 
         H = Gdx.graphics.getHeight();
-        parameterToRendersArray = new ArrayList<ParameterToRender>();
+        parameterToRendersArray = new ArrayList<Parameter>();
 
-        parameterToRendersArray.add(new ParameterToRender(PLAYER_MAX_SPEED, "player max speed"));
-        parameterToRendersArray.add(new ParameterToRender(PLAYER_MOVE_FORCE, "player move force"));
+        parameterToRendersArray.add(new Parameter(PLAYER_MAX_SPEED, "player max speed"));
+        parameterToRendersArray.add(new Parameter(PLAYER_MOVE_FORCE, "player move force"));
 
-        parameterToRendersArray.add(new ParameterToRender(BOTS_NUMBER, "bots number"));
-        parameterToRendersArray.add(new ParameterToRender(BOT_MAX_SPEED, "bot max speed"));
-        parameterToRendersArray.add(new ParameterToRender(BOT_MAX_FORCE, "bot move force"));
+        //parameterToRendersArray.add(new Parameter(BOTS_NUMBER, "bots number"));
+        parameterToRendersArray.add(new Parameter(BOT_MAX_SPEED, "bot max speed"));
+        parameterToRendersArray.add(new Parameter(BOT_MAX_FORCE, "bot move force"));
 
-        parameterToRendersArray.add(new ParameterToRender(OBSTACLE_AVOIDANCE_MIN_DETECTION_BOX_LENGTH, "obstacle min box length"));
+        parameterToRendersArray.add(new Parameter(OBSTACLE_AVOIDANCE_MIN_DETECTION_BOX_LENGTH, "obstacle min box length"));
 
-        parameterToRendersArray.add(new ParameterToRender(WANDER_RADIUS, "wander radius"));
-        parameterToRendersArray.add(new ParameterToRender(WANDER_JITTER, "wander jitter"));
-        parameterToRendersArray.add(new ParameterToRender(WANDER_DISTANCE, "wander distance"));
+        parameterToRendersArray.add(new Parameter(WANDER_RADIUS, "wander radius"));
+        parameterToRendersArray.add(new Parameter(WANDER_JITTER, "wander jitter"));
+        parameterToRendersArray.add(new Parameter(WANDER_DISTANCE, "wander distance"));
 
-        parameterToRendersArray.add(new ParameterToRender(WALL_AVOIDANCE_MULTIPLIER, "wall avoidance multiplier"));
-        parameterToRendersArray.add(new ParameterToRender(OBSTACLE_AVOIDANCE_MULTIPLIER, "obstacle avoidance multiplier"));
-        parameterToRendersArray.add(new ParameterToRender(HIDE_MULTIPLIER, "hide avoidance multiplier"));
-        parameterToRendersArray.add(new ParameterToRender(SEEK_AVOIDANCE_MULTIPLIER, "seek avoidance multiplier"));
-        parameterToRendersArray.add(new ParameterToRender(WANDER_MULTIPLIER, "wander avoidance multiplier"));
+        parameterToRendersArray.add(new Parameter(WALL_AVOIDANCE_MULTIPLIER, "wall avoidance multiplier"));
+        parameterToRendersArray.add(new Parameter(OBSTACLE_AVOIDANCE_MULTIPLIER, "obstacle avoidance multiplier"));
+        parameterToRendersArray.add(new Parameter(HIDE_MULTIPLIER, "hide avoidance multiplier"));
+        parameterToRendersArray.add(new Parameter(SEEK_AVOIDANCE_MULTIPLIER, "seek avoidance multiplier"));
+        parameterToRendersArray.add(new Parameter(WANDER_MULTIPLIER, "wander avoidance multiplier"));
     }
 
     public static Parameters getInstance() {
@@ -46,71 +72,67 @@ class Parameters {
         return instance;
     }
 
-    // Player
-    static Double PLAYER_MOVE_FORCE = 10.0;
-    static Double PLAYER_MAX_SPEED = 5.;
-
-    // Bots
-    static Integer BOTS_NUMBER = 10;
-
-    static Double BOT_MAX_SPEED = 30.;
-    static Double BOT_MAX_FORCE = 10.;
-
-    static Double OBSTACLE_AVOIDANCE_MIN_DETECTION_BOX_LENGTH = 40.;
-
-    static Double WANDER_RADIUS = 1.2;
-    static Double WANDER_DISTANCE = 1.;
-    static Double WANDER_JITTER = 80.;
-
-    // Bots steering behaviours multipliers
-    static Double WALL_AVOIDANCE_MULTIPLIER = 2.;
-    static Double OBSTACLE_AVOIDANCE_MULTIPLIER = 2.;
-    static Double HIDE_MULTIPLIER = 0.11;
-    static Double SEEK_AVOIDANCE_MULTIPLIER = 1.;
-    static Double WANDER_MULTIPLIER = 10.;
-
-    // Debug draw
-    static final boolean DRAW_BOT_BOUNDING_BOX = true;
-
 
     // Render
     static int H;
-    static ArrayList<ParameterToRender> parameterToRendersArray;
+    static ArrayList<Parameter> parameterToRendersArray;
     static int currentSelect = 0;
 
     public void render(Batch batch) {
         //batch.setProjectionMatrix(camera.combined); //or your matrix to draw GAME WORLD, not UI
         for (int i = 0; i < parameterToRendersArray.size(); i++) {
-            ParameterToRender parameterToRender = parameterToRendersArray.get(i);
+            Parameter parameter = parameterToRendersArray.get(i);
             int margin = 5;
             String strToFormat = "   %s: %s";
-            if(currentSelect == i )
+            if (currentSelect == i)
                 strToFormat = "-> %s: %s";
 
             font.draw(batch, String.format(strToFormat,
-                    parameterToRender.label, parameterToRender.valueReference),
+                    parameter.label, parameter.valueReference.getValue()),
                     10, H - 10 * i - margin * i);
         }
     }
 
     public static void selectNext() {
-        if(currentSelect+1 < parameterToRendersArray.size())
+        if (currentSelect + 1 < parameterToRendersArray.size())
             currentSelect++;
     }
 
     public static void selectPrevious() {
-        if(currentSelect-1 >=0)
+        if (currentSelect - 1 >= 0)
             currentSelect--;
     }
 
-    private class ParameterToRender {
-        Number valueReference;
-        String label;
+    public static void increaseCurrentParameter() {
+        parameterToRendersArray.get(currentSelect).increase();
+    }
 
-        public ParameterToRender(Number valueRef, String label) {
-            this.valueReference = valueRef;
-            this.label = label;
+    public static void decreaseCurrentParameter() {
+        parameterToRendersArray.get(currentSelect).decrease();
+
+    }
+
+    private class Parameter {
+        MutableDouble valueReference;
+        String label;
+        double valueDiff;
+
+        public Parameter(MutableDouble val, String label) {
+            this(val, label, 1.);
         }
 
+        public Parameter(MutableDouble valueRef, String label, double valueDiff) {
+            this.valueReference = valueRef;
+            this.label = label;
+            this.valueDiff = valueDiff;
+        }
+
+        public void decrease() {
+            valueReference.subtract(valueDiff);
+        }
+
+        public void increase() {
+            valueReference.add(valueDiff);
+        }
     }
 }

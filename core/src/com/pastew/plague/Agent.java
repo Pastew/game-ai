@@ -42,7 +42,7 @@ public class Agent extends MovingEntity {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.CYAN);
             double minBoxSize = steeringBehaviors.boxLength;
-            Vector2D linePosition = Vector2D.add(position, Vector2D.mul(heading, minBoxSize + (velocity.Length() / maxSpeed) * minBoxSize * 2));
+            Vector2D linePosition = Vector2D.add(position, Vector2D.mul(heading, minBoxSize + (velocity.Length() / maxSpeed.getValue()) * minBoxSize * 2));
             shapeRenderer.line((float) position.x, (float) position.y, (float) linePosition.x, (float) linePosition.y);
 
             shapeRenderer.end();
@@ -62,7 +62,7 @@ public class Agent extends MovingEntity {
         Vector2D acceleration = steeringForce.div(mass);
         acceleration.mul(deltaTime);
         velocity.add(acceleration);
-        velocity.Truncate(maxSpeed);
+        velocity.Truncate(maxSpeed.getValue());
         position.add(velocity);
 
         super.update(deltaTime);
