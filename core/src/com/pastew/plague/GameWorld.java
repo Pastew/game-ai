@@ -195,9 +195,9 @@ class GameWorld {
             Parameters.selectPrevious();
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             Parameters.increaseCurrentParameter();
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             Parameters.decreaseCurrentParameter();
         }
     }

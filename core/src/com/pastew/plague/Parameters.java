@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 class Parameters {
@@ -83,9 +84,9 @@ class Parameters {
         for (int i = 0; i < parameterToRendersArray.size(); i++) {
             Parameter parameter = parameterToRendersArray.get(i);
             int margin = 5;
-            String strToFormat = "   %s: %s";
+            String strToFormat = "   %s: %.1f";
             if (currentSelect == i)
-                strToFormat = "-> %s: %s";
+                strToFormat = "-> %s: %.1f";
 
             font.draw(batch, String.format(strToFormat,
                     parameter.label, parameter.valueReference.getValue()),
@@ -109,7 +110,6 @@ class Parameters {
 
     public static void decreaseCurrentParameter() {
         parameterToRendersArray.get(currentSelect).decrease();
-
     }
 
     private class Parameter {
@@ -118,7 +118,7 @@ class Parameters {
         double valueDiff;
 
         public Parameter(MutableDouble val, String label) {
-            this(val, label, 1.);
+            this(val, label, 0.1);
         }
 
         public Parameter(MutableDouble valueRef, String label, double valueDiff) {
