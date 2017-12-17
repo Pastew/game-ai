@@ -66,6 +66,16 @@ public class Agent extends MovingEntity {
                     (int) steeringBehaviors.wanderTargetWorld.y,
                     5);
             shapeRenderer.end();
+
+            // Hide spots
+            shapeRenderer.setColor(Color.GRAY);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.circle(
+                    (int) steeringBehaviors.wanderTargetWorld.x,
+                    (int) steeringBehaviors.wanderTargetWorld.y,
+                    3);
+            shapeRenderer.end();
+
         }
     }
 
