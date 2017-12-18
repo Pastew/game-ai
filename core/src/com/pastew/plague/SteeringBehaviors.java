@@ -47,6 +47,7 @@ public class SteeringBehaviors {
     private boolean wallAvoidance;
     public MutableDouble boxLength = new MutableDouble(0);
     private boolean separation;
+    private boolean alignment;
 
     SteeringBehaviors(Agent agent, GameWorld gameworld) {
         this.agent = agent;
@@ -81,6 +82,15 @@ public class SteeringBehaviors {
         if (separation) {
             force = Separation(gameworld.getEnemies());
             force.mul(Parameters.SEPARATION_MULTIPLIER.getValue());
+            if (!AccumulateForce(steeringForce, force)){
+//                System.out.println("Ending with separation");
+                return steeringForce;
+            }
+        }
+
+        if (alignment) {
+            force = Alignment(gameworld.getEnemies());
+            force.mul(Parameters.ALIGNMENT_MULTIPLIER.getValue());
             if (!AccumulateForce(steeringForce, force)){
 //                System.out.println("Ending with separation");
                 return steeringForce;
@@ -126,6 +136,8 @@ public class SteeringBehaviors {
                 return steeringForce;
             }
         }
+
+
 
         return steeringForce;
     }
@@ -491,4 +503,29 @@ public class SteeringBehaviors {
         this.separation = false;
     }
 
+    Vector2D Alignment(List<BaseGameEntity> neighbors){
+        Vector2D averageHeading = new Vector2D();
+        int neighborCount = 0;
+
+        for(int a = 0; a < neighbors.size() ; ++a){
+            MovingEntity movingEntity = (MovingEntity)neighbors.get(a);
+            if(movingEntity != this.agent && movingEntity.isTagged()){
+                averageHeading.add(movingEntity.heading);
+                neighborCount++;
+            }
+        }
+
+        if(neighborCount > 0){
+            averageHeading.div(neighborCount);
+            averageHeading.sub(agent.heading);
+        }
+
+        return averageHeading;
+    }
+
+    void turnOnAlignment() { this.alignment = true; }
+
+    void turnOffAlignment() {
+        this.alignment = false;
+    }
 }

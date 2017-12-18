@@ -40,8 +40,9 @@ class Parameters {
     static MutableDouble OBSTACLE_AVOIDANCE_MULTIPLIER = new MutableDouble(2.);
     static MutableDouble HIDE_MULTIPLIER = new MutableDouble(0.11);
     static MutableDouble SEEK_AVOIDANCE_MULTIPLIER = new MutableDouble(1.);
-    static MutableDouble WANDER_MULTIPLIER = new MutableDouble(10.);
-    static MutableDouble SEPARATION_MULTIPLIER = new MutableDouble(1);
+    static MutableDouble WANDER_MULTIPLIER = new MutableDouble(1.);
+    static MutableDouble SEPARATION_MULTIPLIER = new MutableDouble(10);
+    static MutableDouble ALIGNMENT_MULTIPLIER = new MutableDouble(1);
     static MutableDouble ARRIVE_MULTIPLIER = new MutableDouble(1);
 
 
@@ -79,6 +80,7 @@ class Parameters {
         parameterToRendersArray.add(new Parameter(SEEK_AVOIDANCE_MULTIPLIER, "seek multiplier", 0.1));
         parameterToRendersArray.add(new Parameter(WANDER_MULTIPLIER, "wander multiplier", 0.1));
         parameterToRendersArray.add(new Parameter(SEPARATION_MULTIPLIER, "separation multiplier", 0.1));
+        parameterToRendersArray.add(new Parameter(ALIGNMENT_MULTIPLIER, "alignment multiplier", 0.1));
     }
 
     public static Parameters getInstance() {

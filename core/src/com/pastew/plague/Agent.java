@@ -31,6 +31,7 @@ public class Agent extends MovingEntity {
         steeringBehaviors.turnOnWallAvoidance();
         steeringBehaviors.turnOnHide(gameWorld.getPlayerBaseEntity());
         steeringBehaviors.turnOnSeparation();
+        steeringBehaviors.turnOnAlignment();
     }
 
     //colision line

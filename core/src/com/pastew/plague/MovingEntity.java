@@ -31,7 +31,8 @@ public class MovingEntity extends BaseGameEntity {
         super.render();
 
         // Draw heading
-        drawLine(position, Vector2D.add(position, Vector2D.mul(heading, 10)), Color.BLACK);
+        if(Parameters.DRAW_DEBUG)
+            drawLine(position, Vector2D.add(position, Vector2D.mul(heading, 10)), Color.BLACK);
 
         // Draw side
         //drawLine(position, Vector2D.add(position, Vector2D.mul(side, 10)), Color.BLUE);
