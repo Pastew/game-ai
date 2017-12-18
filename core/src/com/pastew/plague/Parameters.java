@@ -43,7 +43,9 @@ class Parameters {
     static MutableDouble WANDER_MULTIPLIER = new MutableDouble(1.);
     static MutableDouble SEPARATION_MULTIPLIER = new MutableDouble(10);
     static MutableDouble ALIGNMENT_MULTIPLIER = new MutableDouble(1);
+    static MutableDouble COHESION_MULTIPLIER = new MutableDouble(1);
     static MutableDouble ARRIVE_MULTIPLIER = new MutableDouble(1);
+    static MutableDouble FLEE_MULTIPLIER = new MutableDouble(1);
 
 
     // Debug draw
@@ -74,6 +76,7 @@ class Parameters {
         parameterToRendersArray.add(new Parameter(SEPARATION_RADIUS, "separation radius"));
 
         parameterToRendersArray.add(new Parameter(ARRIVE_MULTIPLIER, "arrive multiplier", 0.1));
+        parameterToRendersArray.add(new Parameter(FLEE_MULTIPLIER, "flee multiplier", 0.1));
         parameterToRendersArray.add(new Parameter(WALL_AVOIDANCE_MULTIPLIER, "wall avoidance multiplier",0.1));
         parameterToRendersArray.add(new Parameter(OBSTACLE_AVOIDANCE_MULTIPLIER, "obstacle avoidance multiplier",0.1));
         parameterToRendersArray.add(new Parameter(HIDE_MULTIPLIER, "hide multiplier", 0.1));
@@ -81,6 +84,7 @@ class Parameters {
         parameterToRendersArray.add(new Parameter(WANDER_MULTIPLIER, "wander multiplier", 0.1));
         parameterToRendersArray.add(new Parameter(SEPARATION_MULTIPLIER, "separation multiplier", 0.1));
         parameterToRendersArray.add(new Parameter(ALIGNMENT_MULTIPLIER, "alignment multiplier", 0.1));
+        parameterToRendersArray.add(new Parameter(COHESION_MULTIPLIER, "cohesion multiplier", 0.1));
     }
 
     public static Parameters getInstance() {

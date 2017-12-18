@@ -48,6 +48,7 @@ public class SteeringBehaviors {
     public MutableDouble boxLength = new MutableDouble(0);
     private boolean separation;
     private boolean alignment;
+    private boolean cohesion;
 
     SteeringBehaviors(Agent agent, GameWorld gameworld) {
         this.agent = agent;
@@ -63,7 +64,7 @@ public class SteeringBehaviors {
         if (wallAvoidance) {
             force = WallAvoidance();
             force.mul(Parameters.WALL_AVOIDANCE_MULTIPLIER.getValue());
-            if (!AccumulateForce(steeringForce, force)){
+            if (!AccumulateForce(steeringForce, force)) {
 //                System.out.println("Ending with wall avoidance");
                 return steeringForce;
             }
@@ -82,7 +83,7 @@ public class SteeringBehaviors {
         if (separation) {
             force = Separation(gameworld.getEnemies());
             force.mul(Parameters.SEPARATION_MULTIPLIER.getValue());
-            if (!AccumulateForce(steeringForce, force)){
+            if (!AccumulateForce(steeringForce, force)) {
 //                System.out.println("Ending with separation");
                 return steeringForce;
             }
@@ -91,8 +92,17 @@ public class SteeringBehaviors {
         if (alignment) {
             force = Alignment(gameworld.getEnemies());
             force.mul(Parameters.ALIGNMENT_MULTIPLIER.getValue());
-            if (!AccumulateForce(steeringForce, force)){
-//                System.out.println("Ending with separation");
+            if (!AccumulateForce(steeringForce, force)) {
+//                System.out.println("Ending with alignment");
+                return steeringForce;
+            }
+        }
+
+        if (cohesion) {
+            force = Cohesion(gameworld.getEnemies());
+            force.mul(Parameters.COHESION_MULTIPLIER.getValue());
+            if (!AccumulateForce(steeringForce, force)) {
+//                System.out.println("Ending with cohesion");
                 return steeringForce;
             }
         }
@@ -109,7 +119,7 @@ public class SteeringBehaviors {
         if (seekTarget != null) {
             force = seek(seekTarget);
             force.mul(Parameters.SEEK_AVOIDANCE_MULTIPLIER.getValue());
-            if (!AccumulateForce(steeringForce, force)){
+            if (!AccumulateForce(steeringForce, force)) {
 //                System.out.println("Ending with seek ");
                 return steeringForce;
             }
@@ -118,25 +128,29 @@ public class SteeringBehaviors {
         if (wandering) {
             force = wander();
             force.mul(Parameters.WANDER_MULTIPLIER.getValue());
-            if (!AccumulateForce(steeringForce, force)){
+            if (!AccumulateForce(steeringForce, force)) {
 //                System.out.println("Ending with wander ");
                 return steeringForce;
             }
         }
 
         if (fleeTarget != null) {
-            steeringForce.add(flee(fleeTarget));
-        }
-
-        if (arriveTarget != null) {
-            force = arrive(arriveTarget, Deceleration.fast);
-            force.mul(Parameters.ARRIVE_MULTIPLIER.getValue());
-            if (!AccumulateForce(steeringForce, force)){
+            force = flee(fleeTarget);
+            force.mul(Parameters.FLEE_MULTIPLIER.getValue());
+            if (!AccumulateForce(steeringForce, force)) {
 //                System.out.println("Ending with arriving ");
                 return steeringForce;
             }
         }
 
+        if (arriveTarget != null) {
+            force = arrive(arriveTarget, Deceleration.fast);
+            force.mul(Parameters.ARRIVE_MULTIPLIER.getValue());
+            if (!AccumulateForce(steeringForce, force)) {
+//                System.out.println("Ending with arriving ");
+                return steeringForce;
+            }
+        }
 
 
         return steeringForce;
@@ -482,13 +496,12 @@ public class SteeringBehaviors {
     }
 
 
-
     // ================== Separation ==============================
-    Vector2D Separation(List<BaseGameEntity> neighbors){
+    Vector2D Separation(List<BaseGameEntity> neighbors) {
         Vector2D steeringForce = new Vector2D();
 
-        for(int a = 0; a < neighbors.size() ; ++a){
-            if(neighbors.get(a) != this.agent && neighbors.get(a).isTagged()){
+        for (int a = 0; a < neighbors.size(); ++a) {
+            if (neighbors.get(a) != this.agent && neighbors.get(a).isTagged()) {
                 Vector2D toAgent = Vector2DOperations.sub(agent.position, neighbors.get(a).position);
                 steeringForce.add(Vec2DNormalize(toAgent).div(toAgent.Length()));
             }
@@ -497,25 +510,28 @@ public class SteeringBehaviors {
         return steeringForce;
     }
 
-    void turnOnSeparation() { this.separation = true; }
+    void turnOnSeparation() {
+        this.separation = true;
+    }
 
     void turnOffSeparaion() {
         this.separation = false;
     }
 
-    Vector2D Alignment(List<BaseGameEntity> neighbors){
+    // ======== Alignment ===========
+    Vector2D Alignment(List<BaseGameEntity> neighbors) {
         Vector2D averageHeading = new Vector2D();
         int neighborCount = 0;
 
-        for(int a = 0; a < neighbors.size() ; ++a){
-            MovingEntity movingEntity = (MovingEntity)neighbors.get(a);
-            if(movingEntity != this.agent && movingEntity.isTagged()){
+        for (int a = 0; a < neighbors.size(); ++a) {
+            MovingEntity movingEntity = (MovingEntity) neighbors.get(a);
+            if (movingEntity != this.agent && movingEntity.isTagged()) {
                 averageHeading.add(movingEntity.heading);
                 neighborCount++;
             }
         }
 
-        if(neighborCount > 0){
+        if (neighborCount > 0) {
             averageHeading.div(neighborCount);
             averageHeading.sub(agent.heading);
         }
@@ -523,9 +539,43 @@ public class SteeringBehaviors {
         return averageHeading;
     }
 
-    void turnOnAlignment() { this.alignment = true; }
+    void turnOnAlignment() {
+        this.alignment = true;
+    }
 
     void turnOffAlignment() {
         this.alignment = false;
+    }
+
+
+    // ============= Cohesion =============
+    Vector2D Cohesion(List<BaseGameEntity> neighbors) {
+        Vector2D centerOfMass = new Vector2D();
+        Vector2D steeringForce = new Vector2D();
+        int neighborCount = 0;
+
+        for (int a = 0; a < neighbors.size(); ++a) {
+            MovingEntity movingEntity = (MovingEntity) neighbors.get(a);
+            if (movingEntity != this.agent && movingEntity.isTagged()) {
+                centerOfMass.add(movingEntity.position);
+                neighborCount++;
+            }
+        }
+
+        if (neighborCount > 0) {
+            centerOfMass.div(neighborCount);
+            steeringForce = seek(centerOfMass);
+        }
+
+        return steeringForce;
+    }
+
+    void turnOnCohesion() {
+        this.cohesion = true;
+    }
+
+    void turnOffCohesion() {
+        this.turnOnCohesion();
+        cohesion = false;
     }
 }

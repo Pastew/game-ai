@@ -15,16 +15,11 @@ public class Agent extends MovingEntity {
         this.gameWorld = gameWorld;
         maxSpeed = Parameters.BOT_MAX_SPEED;
         maxForce = Parameters.BOT_MAX_FORCE;
-
         color = GameColors.enemyColor;
-
 
         steeringBehaviors = new SteeringBehaviors(this, gameWorld);
 
-
-        //steeringBehaviors.turnOnFlee(gameWorld.getPlayerVector2D());
-        //steeringBehaviors.turnOnSeek(gameWorld.getPlayerVector2D());
-        //steeringBehaviors.turnOnSeek(gameWorld.getColumn(0).position);
+        steeringBehaviors.turnOnFlee(gameWorld.getPlayerVector2D());
         steeringBehaviors.turnOnArrive(gameWorld.getPlayerVector2D());
         steeringBehaviors.turnOnWander();
         steeringBehaviors.turnOnObstacleAvoidance();
@@ -33,8 +28,6 @@ public class Agent extends MovingEntity {
         steeringBehaviors.turnOnSeparation();
         steeringBehaviors.turnOnAlignment();
     }
-
-    //colision line
 
     public void render() {
         super.render();
