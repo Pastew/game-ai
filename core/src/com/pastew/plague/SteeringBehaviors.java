@@ -68,15 +68,6 @@ public class SteeringBehaviors {
             }
         }
 
-        if (separation) {
-            force = Separation(gameworld.getEnemies());
-            force.mul(Parameters.SEPARATION_MULTIPLIER.getValue());
-            if (!AccumulateForce(steeringForce, force)){
-//                System.out.println("Ending with separation");
-                return steeringForce;
-            }
-        }
-
         if (obstacleAvoidance) {
             force = obstacleAvoidance();
             force.mul(Parameters.OBSTACLE_AVOIDANCE_MULTIPLIER.getValue());
@@ -85,6 +76,15 @@ public class SteeringBehaviors {
                 return steeringForce;
             }
 
+        }
+
+        if (separation) {
+            force = Separation(gameworld.getEnemies());
+            force.mul(Parameters.SEPARATION_MULTIPLIER.getValue());
+            if (!AccumulateForce(steeringForce, force)){
+//                System.out.println("Ending with separation");
+                return steeringForce;
+            }
         }
 
         if (hideTarget != null) {
@@ -114,13 +114,18 @@ public class SteeringBehaviors {
             }
         }
 
-//        if (fleeTarget != null) {
-//            steeringForce.add(flee(fleeTarget));
-//        }
+        if (fleeTarget != null) {
+            steeringForce.add(flee(fleeTarget));
+        }
 
-//        if (arriveTarget != null) {
-//            steeringForce.add(arrive(arriveTarget, Deceleration.fast));
-//        }
+        if (arriveTarget != null) {
+            force = arrive(arriveTarget, Deceleration.fast);
+            force.mul(Parameters.ARRIVE_MULTIPLIER.getValue());
+            if (!AccumulateForce(steeringForce, force)){
+//                System.out.println("Ending with arriving ");
+                return steeringForce;
+            }
+        }
 
         return steeringForce;
     }

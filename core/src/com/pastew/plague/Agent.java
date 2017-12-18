@@ -25,7 +25,7 @@ public class Agent extends MovingEntity {
         //steeringBehaviors.turnOnFlee(gameWorld.getPlayerVector2D());
         //steeringBehaviors.turnOnSeek(gameWorld.getPlayerVector2D());
         //steeringBehaviors.turnOnSeek(gameWorld.getColumn(0).position);
-        //steeringBehaviors.turnOnArrive(gameWorld.getPlayerVector2D());
+        steeringBehaviors.turnOnArrive(gameWorld.getPlayerVector2D());
         steeringBehaviors.turnOnWander();
         steeringBehaviors.turnOnObstacleAvoidance();
         steeringBehaviors.turnOnWallAvoidance();

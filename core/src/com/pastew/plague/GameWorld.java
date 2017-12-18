@@ -12,7 +12,6 @@ import java.util.Random;
 
 class GameWorld {
 
-    private final static int COLUMN_NUMBER = 8;
     private SpriteBatch batch;
     private Player player;
     private List<BaseGameEntity> entities;
@@ -57,7 +56,7 @@ class GameWorld {
         float endX = Gdx.graphics.getWidth() - 100;
         float endY = Gdx.graphics.getHeight() - 100;
 
-        while (columns.size() < COLUMN_NUMBER) {
+        while (columns.size() < Parameters.COLUMN_NUMBER) {
 
             float x = (float) ((int) (Math.random() * (endX - startX)) + startX);
             float y = (float) ((int) (Math.random() * (endY - startY)) + startY);
@@ -81,15 +80,9 @@ class GameWorld {
         Random random = new Random();
 
         for (int i = 0; i < Parameters.BOTS_NUMBER; ++i) {
-            float x = 10;
-            float y = 10;
-            if (random.nextBoolean()) {
-                x = Gdx.graphics.getWidth() - i * 200;
-            }
-
-            if (random.nextBoolean()) {
-                y = Gdx.graphics.getHeight() - i * 200;
-            }
+            float x, y;
+            x = 100;
+            y = Gdx.graphics.getHeight() - i * Gdx.graphics.getHeight()/Parameters.BOTS_NUMBER;
 
             Agent enemy = new Agent(this);
             enemy.position.x = x;

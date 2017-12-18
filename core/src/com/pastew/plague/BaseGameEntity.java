@@ -45,7 +45,7 @@ public class BaseGameEntity {
     }
 
     private void tag() {
-        tag = false;
+        tag = true;
     }
 
     private void unTag() {

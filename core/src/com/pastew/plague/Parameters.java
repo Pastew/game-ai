@@ -15,6 +15,9 @@ class Parameters {
     static MutableDouble PLAYER_MOVE_FORCE = new MutableDouble(10.0);
     static MutableDouble PLAYER_MAX_SPEED = new MutableDouble(5.);
 
+    // Columns
+    static int COLUMN_NUMBER = 8;
+
     // Bots
     static int BOTS_NUMBER = 10;
 
@@ -39,6 +42,8 @@ class Parameters {
     static MutableDouble SEEK_AVOIDANCE_MULTIPLIER = new MutableDouble(1.);
     static MutableDouble WANDER_MULTIPLIER = new MutableDouble(10.);
     static MutableDouble SEPARATION_MULTIPLIER = new MutableDouble(1);
+    static MutableDouble ARRIVE_MULTIPLIER = new MutableDouble(1);
+
 
     // Debug draw
     static boolean DRAW_DEBUG = true;
@@ -67,6 +72,7 @@ class Parameters {
 
         parameterToRendersArray.add(new Parameter(SEPARATION_RADIUS, "separation radius"));
 
+        parameterToRendersArray.add(new Parameter(ARRIVE_MULTIPLIER, "arrive multiplier", 0.1));
         parameterToRendersArray.add(new Parameter(WALL_AVOIDANCE_MULTIPLIER, "wall avoidance multiplier",0.1));
         parameterToRendersArray.add(new Parameter(OBSTACLE_AVOIDANCE_MULTIPLIER, "obstacle avoidance multiplier",0.1));
         parameterToRendersArray.add(new Parameter(HIDE_MULTIPLIER, "hide multiplier", 0.1));
